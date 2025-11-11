@@ -1,0 +1,14 @@
+{
+    "1":{
+        "question": "quelle est la capitale de la France?",
+        "answer": "Paris"
+    },
+    "2":{
+        "question": "que donne 2 + 2 ?",
+        "answer": "4"
+    },
+    "3":{
+        "question": "quelle est la plus grande planète du système solaire?",
+        "answer": "Jupiter"
+    }
+}
