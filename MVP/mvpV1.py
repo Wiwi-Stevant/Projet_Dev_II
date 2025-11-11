@@ -1,4 +1,5 @@
 import json
+#from ..utils.utilitaire import get_json
 
 with open('data/questions.json', 'r') as liste_de_questions:
     questions = json.load(liste_de_questions) #on met toutes les question du json dans questions
