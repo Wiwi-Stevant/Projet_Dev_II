@@ -43,7 +43,13 @@ def flashcard():
                 pass
     main()
 
-def main():# ----------------------------------------FONCTION PRINCIPALE---------------------------------------------
+def add(q, r):
+    new_question = str(len(questions) + 1),":",{"question": q, "reponse": r}
+    with open('data/questions.json', 'a') as liste_de_questions:
+        liste_de_questions.append(new_question)
+
+
+def main():# ----------------------------------------FONCTION PRINCIPALE------------------------------------
     choix = input("""pour commencer le quizz, tapez 'quizz'
                   pour réviser les questions, tapez 'flashcard'
                   pour quitter, tapez 'exit': """)
