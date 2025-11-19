@@ -69,14 +69,14 @@ class Quiz:
         self.score = 0
 
     def tirer_carte(self):
-        cartes = list(self.chaptre.cartes.values())
+        cartes = list(self.chapitre.cartes.values())
         poids = []
         for c in cartes:
             poids.append(max(1, 5 - c.niveau))
         return random.choices(cartes, weights=poids, k=1)[0]
     
     def jouer(self):
-        print(f"Quiz : {self.chapitre.nom}")
+        print(f"Mode Quiz : {self.chapitre.nom}")
         compteur = 0
         while True:
             carte = self.tirer_carte()
@@ -94,3 +94,44 @@ class Quiz:
             compteur += 1
         
         print("Votre score est de {self.score} sur {compteur}")
+
+class FlashCards:
+    def __init__(self, chapitre):
+        self.chapitre = chapitre
+
+    def tirer_carte(self):
+        cartes = list(self.chaptre.cartes.values())
+        poids = []
+        for c in cartes:
+            poids.append(max(1, 5 - c.niveau))
+        return random.choices(cartes, weights=poids, k=1)[0]
+
+    def jouer(self):
+        print(f"Mode FlashCards : {self.chapitre.nom}")
+
+        while True:
+            carte = self.tirer_carte()
+
+            print(f"Question : {carte.question}")
+            input("Appuyer sur Entrer pour voir la réponse")
+            print(f"Réponse : {carte.reponse}")
+
+            choix = input("Connu (c), Pas connu (p), Quitter (q) : ")
+            if choix.lower() == "q":
+                break
+            elif choix.lower() == "c":
+                carte.connue()
+            elif choix.lower() == "p":
+                carte.pas_connue()
+
+chapitre = Chapitre("Maths")
+chapitre.cree_cartes(1, "2+2 ?", "4")
+chapitre.cree_cartes(2, "3+2 ?", "5")
+
+jeu = input("choix jeu : Q ou F")
+if jeu.lower() == "q":
+    quiz = Quiz(chapitre)
+    quiz.jouer()
+elif jeu.lower() == "f":
+    flashcards = FlashCards(chapitre)
+    flashcards.jouer()
