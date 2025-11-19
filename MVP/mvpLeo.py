@@ -93,14 +93,14 @@ class Quiz:
                 carte.pas_connue()
             compteur += 1
         
-        print("Votre score est de {self.score} sur {compteur}")
+        print(f"Votre score est de {self.score} sur {compteur}")
 
 class FlashCards:
     def __init__(self, chapitre):
         self.chapitre = chapitre
 
     def tirer_carte(self):
-        cartes = list(self.chaptre.cartes.values())
+        cartes = list(self.chapitre.cartes.values())
         poids = []
         for c in cartes:
             poids.append(max(1, 5 - c.niveau))
