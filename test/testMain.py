@@ -2,7 +2,7 @@
 #from modules.flashCard import FlashCards
 #from modules.chapitre import Chapitres
 
-def main():
+def main():#fonction principale -> choix de l'action
     print("""Bonjour, quel option souhaitez-vous exécuter ?
           1. Lancer le quiz
           2. Lancer les flashcards
@@ -10,6 +10,7 @@ def main():
           4. Quitter
            :""")
     choix = input()
+
     if choix == "1":
         quizz()
 
@@ -33,7 +34,7 @@ def flashcards():
     pass
 
 def gestion_chapitres():
-    print("Quel chapitre voulez-vous gérer ?") 
+    print("Quel chapitre voulez-vous gérer ?") #selection du chap
     chap = input()
 
     if chap == ... : # on regarde si le chapitre existe -- code à compléter quand on aura fini le module chapitre -- !!!!!!!!!!!!!!!!!!!!
@@ -58,7 +59,7 @@ def gestion_chapitres():
             main()
 
     else:
-        print("voulez-vous créer ce chapitre ? (o/n) :")
+        print("voulez-vous créer ce chapitre ? (o/n) :")#on demande si on veut cree le chap car le nom n'existe pas
         reponse = input()
 
         if reponse.lower() == "o" or reponse.lower() == "oui" or reponse.lower() == "yes" or reponse.lower() == "y":

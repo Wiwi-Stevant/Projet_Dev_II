@@ -4,12 +4,12 @@ class Cartes:
         self.reponse = reponse
         self.question = question
         self.img = img
-        self.niveau = niveau
+        self.niveau = niveau # le niveau change le niveau d'apparition de la carte
     
-    def set_niveau(self, niveau):
+    def set_niveau(self, niveau): # en fonction de nos reponses dans les quiz et de si on connais ou pas la carte dans les flashcards on modifie le niveau
         self.niveau = niveau
 
-    def jsonification(self):
+    def jsonification(self): # on mais la carte en json pour la sauvgarde
         return {
             "id": self.id,
             "reponse": self.reponse,
@@ -19,7 +19,7 @@ class Cartes:
         }
     
     @staticmethod
-    def cree_carte_depuis_json(data):
+    def cree_carte_depuis_json(data): # on cree une carte a partir d'un json
         return Cartes(
             id=data["id"],
             reponse=data["reponse"],
