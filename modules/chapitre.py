@@ -3,7 +3,7 @@ import os
 from modules.carte import Cartes
 
 class Chapitres:
-    id = 1
+    idGlobal = 0
     def __init__(self, nom):
         Chapitres.idGlobal += 1
         self.id = Chapitres.idGlobal
@@ -12,28 +12,36 @@ class Chapitres:
         self.nom = nom
         self.sauvgarde = f"{self.nom}.json".lower() #on met le non du chapitre avec .json pour dire quel fichier gere la sauvgarde du chap
 
-    def charger_cartes(self): #on recupere les carte depuis le json
-        if os.path.exists(self.sauvgarde):
-            with open(self.sauvgarde, 'r', encoding='utf-8') as f:
+    def _get_data_path(self): # chemin du fichier de sauvgarde (chat GPT)
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+        os.makedirs(data_dir, exist_ok=True)
+        return os.path.join(data_dir, self.sauvgarde)
+
+    def charger_cartes(self):# On récupère les cartes depuis le json
+        fichier_path = self._get_data_path() 
+        if os.path.exists(fichier_path):
+            with open(fichier_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                cartes = []
-                for carte_data in data:
-                    carte = Cartes(
-                        carte_data['id'],
-                        carte_data['question'],
-                        carte_data['reponse'],
-                        carte_data.get('img', "")
-                    )
-                    cartes.append(carte)
-                return cartes
+                if isinstance(data, list):
+                    for carte_data in data:
+                        carte = Cartes(
+                            carte_data['id'],
+                            carte_data['question'],
+                            carte_data['reponse'],
+                            carte_data.get('img', ""),
+                            carte_data.get('niveau', 4)
+                        )
+                        self.cartes[carte.id] = carte
+                        self.idCarte = max(self.idCarte, carte.id + 1)
         else:
             print("Le Chapitre n'existe pas encore.")
 
-    def sauvegarder_cartes(self): #on sauvgarde les cartes dans le json -----> metode fait avec AI
-        data_cartes = [carte.to_dict() for carte in self.cartes.values()]
-        with open(f"../data/{self.sauvgarde}", 'w', encoding='utf-8') as f:
+    def sauvegarder_cartes(self):  # On sauvegarde les cartes dans le json
+        data_cartes = [carte.jsonification() for carte in self.cartes.values()]
+        fichier_path = self._get_data_path()
+        with open(fichier_path, 'w', encoding='utf-8') as f:
             json.dump(data_cartes, f, ensure_ascii=False, indent=4)
-        print(f"chapitre {self.nom} sauvgardé dans {self.sauvgarde}.")
+        print(f"chapitre {self.nom} sauvgardé dans {fichier_path}.")
 
     def cree_cartes(self, question, reponse, img=""): #on cree une nouvelle carte
         nouvelle_id = self.idCarte
