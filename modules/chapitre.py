@@ -35,8 +35,14 @@ class Chapitres:
             json.dump(data_cartes, f, ensure_ascii=False, indent=4)
         print(f"chapitre {self.nom} sauvgardé dans {self.sauvgarde}.")
 
-    def cree_cartes(self, id, question, reponse, img=""): #on cree une nouvelle carte
-        pass
+    def cree_cartes(self, question, reponse, img=""): #on cree une nouvelle carte
+        nouvelle_id = self.idCarte
+        nouvelle_carte = Cartes(nouvelle_id, question, reponse, img)
+        self.cartes[nouvelle_id] = nouvelle_carte
+        self.idCarte += 1
+        print(f"La carte {nouvelle_id} : '{question}', {reponse} a été créée.")
+        self.sauvegarder_cartes()
+        return nouvelle_carte
 
     def supprimer_carte(self):# on supprime une carte via son id ou sa question jsp 
         pass
