@@ -1,14 +1,23 @@
-{
-    "1":{
+[
+    {
+        "id": 1,
         "question": "quelle est la capitale de la France?",
-        "reponse": "Paris"
+        "reponse": "Paris",
+        "img": "",
+        "niveau": 4
     },
-    "2":{
+    {
+        "id": 2,
         "question": "que donne 2 + 2 ?",
-        "reponse": "4"
+        "reponse": "4",
+        "img": "",
+        "niveau": 4
     },
-    "3":{
+    {
+        "id": 3,
         "question": "quelle est la plus grande planète du système solaire?",
-        "reponse": "Jupiter"
+        "reponse": "Jupiter",
+        "img": "",
+        "niveau": 4
     }
-}
+]
