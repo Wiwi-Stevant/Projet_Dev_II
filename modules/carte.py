@@ -1,5 +1,5 @@
 class Cartes:
-    def __init__(self, id, reponse, question, img ,niveau = 4):
+    def __init__(self, id, question, reponse, img ,niveau = 4):
         self.id = id
         self.reponse = reponse
         self.question = question

@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # code donné par AI pour reconnaitre les modules
+
 #from modules.quiz import Quiz
 #from modules.flashCard import FlashCards
 from modules.chapitre import Chapitres

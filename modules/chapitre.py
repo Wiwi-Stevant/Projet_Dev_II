@@ -31,7 +31,7 @@ class Chapitres:
 
     def sauvegarder_cartes(self): #on sauvgarde les cartes dans le json -----> metode fait avec AI
         data_cartes = [carte.to_dict() for carte in self.cartes.values()]
-        with open(self.sauvgarde, 'w', encoding='utf-8') as f:
+        with open(f"../data/{self.sauvgarde}", 'w', encoding='utf-8') as f:
             json.dump(data_cartes, f, ensure_ascii=False, indent=4)
         print(f"chapitre {self.nom} sauvgardé dans {self.sauvgarde}.")
 
@@ -44,11 +44,13 @@ class Chapitres:
         self.sauvegarder_cartes()
         return nouvelle_carte
 
-    def supprimer_carte(self):# on supprime une carte via son id ou sa question jsp 
+    def supprimer_carte(self, id):# on supprime une carte via son id ou sa question jsp 
         pass
 
     def modifier_carte(self, id, question, reponse, img):
         pass
 
     def __str__(self): # on affiche toutes les carte du chap
-        pass
+        print(f"voici les cartes du chapitre {self.nom} ({self.id}) :")
+        for carte in self.cartes.values():
+            print(carte)
