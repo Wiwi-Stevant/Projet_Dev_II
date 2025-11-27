@@ -53,10 +53,16 @@ class Chapitres:
         return nouvelle_carte
 
     def supprimer_carte(self, id):# on supprime une carte via son id ou sa question jsp 
-        pass
+        carte = self.cartes.pop(id)
 
     def modifier_carte(self, id, question, reponse, img):
-        pass
+        if id not in self.cartes:
+            raise ValueError("La carte n'existe pas")
+        carte = self.cartes[id]
+        carte.question = question
+        carte.reponse = reponse
+        carte.img = img
+        self.sauvegarder_cartes()
 
     def __str__(self): # on affiche toutes les carte du chap
         print(f"voici les cartes du chapitre {self.nom} ({self.id}) :")
