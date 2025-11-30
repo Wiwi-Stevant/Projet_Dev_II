@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-#from modules.flashCard import Flashcards
+from modules.flashCard import FlashCards
 #from modules.quiz import Quiz
 from modules.chapitre import Chapitres
 
@@ -50,7 +50,49 @@ def quizz():
     pass
 
 def flashcards():
-    pass
+    if not chapitres_dict:
+        print("Aucun chapitre chargé. Créez d'abord un chapitre dans la gestion des chapitres.")
+        return
+
+    print("Choisissez un chapitre pour les flashcards :")
+    for nom in chapitres_dict:
+        print(f" - {nom}")
+
+    nom_chap = input("> ").strip()
+
+    if nom_chap not in chapitres_dict:
+        print("Chapitre introuvable.")
+        return
+
+    chap = chapitres_dict[nom_chap]
+
+    # Création du gestionnaire FlashCards
+    fc = FlashCards(chap)
+
+    print(f"\nFlashcards du chapitre : {chap.nom}")
+    print("Tapez 'q' pour quitter à tout moment.\n")
+
+    while True:
+        fc.mettre_a_jour_cartes()  # mettre à jour la liste si des cartes ont été ajoutées/supprimées
+
+        carte = fc.tirer_carte()
+        if carte is None:
+            print("Aucune carte disponible.")
+            break
+
+        print(f"\nQuestion : {carte.question}")
+        cmd = input("(Appuyez sur Entrée pour voir la réponse ou 'q' pour quitter) : ").strip().lower()
+        if cmd == 'q':
+            break
+
+        print(f"Réponse : {carte.reponse}")
+        if carte.img:
+            print(f"Image associée : {carte.img}")
+
+        choix = input("\nVoulez-vous une autre carte ? (o/n) : ").strip().lower()
+        if choix not in confirmation:
+            break
+
 
 def gestion_chapitres():
     print("Quel chapitre voulez-vous gérer ?")
