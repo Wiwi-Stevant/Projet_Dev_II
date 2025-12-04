@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from modules.flashCard import FlashCards
-#from modules.quiz import Quiz
+from modules.quiz import Quiz
 from modules.chapitre import Chapitres
 
 confirmation = ["o", "oui", "yes", "y"]
@@ -47,7 +47,15 @@ def main():
         main()
 
 def quizz():
-    pass
+    chap = input("Quelle chapitre voulez-vous utiliser pour le quiz ?")
+    for nom in chapitres_dict:
+        print(f" - {nom}")
+    if chap not in chapitres_dict:
+        print("Chapitre introuvable.")
+        quizz()
+    else:
+        quiz = Quiz(chap)
+        quiz.jouer()
 
 def flashcards():
     if not chapitres_dict:
@@ -96,6 +104,9 @@ def flashcards():
 
 def gestion_chapitres():
     print("Quel chapitre voulez-vous gérer ?")
+    for nom in chapitres_dict:
+        print(f" - {nom}")
+
     nom_chap = input().strip()
 
     if nom_chap in chapitres_dict:
