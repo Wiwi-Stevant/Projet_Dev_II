@@ -47,9 +47,9 @@ def main():
         main()
 
 def quizz():
-    chap = input("Quelle chapitre voulez-vous utiliser pour le quiz ?")
     for nom in chapitres_dict:
         print(f" - {nom}")
+    chap = input("Quelle chapitre voulez-vous utiliser pour le quiz ?")
     if chap not in chapitres_dict:
         print("Chapitre introuvable.")
         quizz()
