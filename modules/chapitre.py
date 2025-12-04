@@ -54,6 +54,7 @@ class Chapitres:
 
     def supprimer_carte(self, id):# on supprime une carte via son id ou sa question jsp 
         carte = self.cartes.pop(id)
+        self.sauvegarder_cartes()
 
     def modifier_carte(self, id, question, reponse, img):
         if id not in self.cartes:
