@@ -1,6 +1,6 @@
 import json
 import os
-from carte import Cartes
+from modules.carte import Cartes
 
 class Chapitres:
     idGlobal = 0
