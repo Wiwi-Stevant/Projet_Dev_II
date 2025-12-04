@@ -139,7 +139,17 @@ def menu_chapitre(chap_charger):
                 print("Création de la carte annulée.")
 
         elif choix == "2":
-            print("Suppression non implémentée")
+            demand_suppression = (int(input("Entrez l'ID de la carte à supprimer : ").strip()))
+            carte = chap_charger.cartes.get(demand_suppression)
+            print(f"voulez-vous vraiment supprimer la carte {carte} ? (o/n) :")
+            confirm = input().strip().lower()
+            if confirm in confirmation:
+                chap_charger.supprimer_carte(demand_suppression)
+                print("Carte supprimée.")
+            
+            else:
+                print("Suppression annulée.")
+
         elif choix == "3":
             print("Modification non implémentée")
         elif choix == "4":
