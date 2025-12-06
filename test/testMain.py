@@ -100,6 +100,7 @@ def flashcards():
         choix = input("\nVoulez-vous une autre carte ? (o/n) : ").strip().lower()
         if choix not in confirmation:
             break
+    main()
 
 
 def gestion_chapitres():
