@@ -6,6 +6,9 @@ class Cartes:
         self.img = img
         self.niveau = niveau # le niveau change le niveau d'apparition de la carte
     
+    def get_niveau(self):
+        return self.niveau
+    
     def set_niveau(self, niveau): # en fonction de nos reponses dans les quiz et de si on connais ou pas la carte dans les flashcards on modifie le niveau
         self.niveau = niveau
 
