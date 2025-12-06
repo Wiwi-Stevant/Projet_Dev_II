@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) # -> chat GPT
 
 from modules.flashCard import FlashCards
 from modules.quiz import Quiz
@@ -10,7 +10,7 @@ confirmation = ["o", "oui", "yes", "y"]
 refus = ["n", "non", "no"]
 chapitres_dict = {}  # Dictionnaire pour stocker les chapitres
 
-def charger_chapitres():
+def charger_chapitres(): # -> chat GPT
     """Charge tous les chapitres existants depuis le dossier data"""
     data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     if os.path.exists(data_dir):
@@ -56,6 +56,7 @@ def quizz():
     else:
         quiz = Quiz(chap)
         quiz.jouer()
+    main()
 
 def flashcards():
     if not chapitres_dict:
