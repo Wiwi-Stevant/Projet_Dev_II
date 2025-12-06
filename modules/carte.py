@@ -11,6 +11,10 @@ class Cartes:
     
     def set_niveau(self, niveau): # en fonction de nos reponses dans les quiz et de si on connais ou pas la carte dans les flashcards on modifie le niveau
         self.niveau = niveau
+        if self.niveau < 0:
+            self.niveau = 0
+        if self.niveau > 10:
+            self.niveau = 10
 
     def jsonification(self): # on mais la carte en json pour la sauvgarde
         return {
