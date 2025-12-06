@@ -16,6 +16,12 @@ class Cartes:
         if self.niveau > 10:
             self.niveau = 10
 
+    def connue(self): # on augmente le niveau de la carte
+        self.set_niveau(self.niveau + 1)
+    
+    def pas_connue(self): # on diminue le niveau de la carte
+        self.set_niveau(self.niveau - 1)
+
     def jsonification(self): # on mais la carte en json pour la sauvgarde
         return {
             "id": self.id,
