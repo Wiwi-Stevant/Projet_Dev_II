@@ -163,7 +163,30 @@ def menu_chapitre(chap_charger):
                 print("Suppression annulée.")
 
         elif choix == "3":
-            print("Modification non implémentée")
+            print("Entrez l'ID de la carte à modifier :")
+            chap_charger.__str__()
+            id_modification = int(input().strip())
+            if id_modification not in chap_charger.cartes:
+                print("Carte introuvable.")
+                continue
+            confirm = input(f"Voulez-vous modifier la carte {chap_charger.cartes[id_modification]} ? (o/n) : ").strip().lower()
+            if confirm in confirmation:
+                nouvelle_question = input("Nouvelle question : ").strip()
+                nouvelle_reponse = input("Nouvelle réponse : ").strip()
+                nouvelle_img = input("Nouveau chemin d'image (laisser vide si aucune) : ").strip()
+                print(f"""Vous avez entré :
+                    question : {nouvelle_question}
+                    réponse : {nouvelle_reponse}
+                    image : {nouvelle_img if nouvelle_img else "Aucune"}""")
+                confirm_modif = input("Confirmez-vous les modifications ? (o/n) : ").strip().lower()
+                if confirm_modif in confirmation:
+                    chap_charger.modifier_carte(id_modification, nouvelle_question, nouvelle_reponse, nouvelle_img)
+                    print("Carte modifiée.")
+                else:
+                    print("Modifications annulées.")
+            else:
+                print("Modification annulée.")
+
         elif choix == "4":
             chap_charger.__str__()
         elif choix == "5":
