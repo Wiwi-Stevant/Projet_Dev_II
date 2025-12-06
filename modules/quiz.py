@@ -33,7 +33,6 @@ class Quiz:
                 print(f"Mauvaise réponse ! La bonne réponse était {carteActuelle.reponse}")
                 carteActuelle.pas_connue()
             compteur += 1
-            
 
-#quiz = Quiz('test')
-#quiz.jouer()
+        print(f"Quiz terminé ! Score final : {self.score}/{compteur}")
+            
