@@ -1,7 +1,7 @@
 import random
 
 # Exception personnalisée
-class FlashCardsError(Exception):
+class FlashCardError(Exception):
     pass
 
 
@@ -23,7 +23,7 @@ class FlashCards:
     @chapitre.setter
     def chapitre(self, nouveau_chapitre):
         if nouveau_chapitre is None:
-            raise FlashCardsError("Le chapitre ne peut pas être vide.")
+            raise FlashCardError("Le chapitre ne peut pas être vide")
         self._chapitre = nouveau_chapitre
         self.mettre_a_jour_cartes()
 
@@ -47,7 +47,7 @@ class FlashCards:
         """Tire une carte aléatoire selon le niveau (plus faible = plus de chances)"""
         cartes = list(self._chapitre.cartes.values())
         if not cartes:
-            raise FlashCardsError("Aucune carte disponible pour le tirage.")
+            raise FlashCardError("Aucune carte disponible pour le tirage")
 
 
         poids = [max(1, 5 - c.niveau) for c in cartes]  # plus le niveau est bas, plus la carte est tirée
@@ -56,13 +56,13 @@ class FlashCards:
     def retourner(self, id_carte):
         """Retourne la réponse de la carte sélectionnée"""
         if id_carte not in self._chapitre.cartes:
-            raise FlashCardsError(f"La carte avec l’ID {id_carte} n’existe pas.")
+            raise FlashCardError(f"La carte avec l’ID {id_carte} n’existe pas")
         return self._chapitre.cartes[id_carte].reponse
 
     def carte_suivante(self):
         """Passe à la carte suivante et retourne sa question"""
         if not self._ids:
-            raise FlashCardsError("Aucune carte dans le chapitre.")
+            raise FlashCardError("Aucune carte dans le chapitre")
 
 
         self._index = (self._index + 1) % len(self._ids)
