@@ -15,27 +15,27 @@ class FlashCards:
         self._ids = list(chapitre.cartes.keys())  # liste des IDs des cartes
         self._index = 0
 
-    @property
-    def chapitre(self):
-        """Retourne le chapitre associé"""
-        return self._chapitre
+    # @property
+    # def chapitre(self):
+    #     """Retourne le chapitre associé"""
+    #     return self._chapitre
 
-    @chapitre.setter
-    def chapitre(self, nouveau_chapitre):
-        if nouveau_chapitre is None:
-            raise FlashCardsError("Le chapitre ne peut pas être vide.")
-        self._chapitre = nouveau_chapitre
-        self.mettre_a_jour_cartes()
+    # @chapitre.setter
+    # def chapitre(self, nouveau_chapitre):
+    #     if nouveau_chapitre is None:
+    #         raise FlashCardsError("Le chapitre ne peut pas être vide.")
+    #     self._chapitre = nouveau_chapitre
+    #     self.mettre_a_jour_cartes()
 
-    @property
-    def ids(self):
-        """Retourne la liste des IDs des cartes"""
-        return self._ids
+    # @property
+    # def ids(self):
+    #     """Retourne la liste des IDs des cartes"""
+    #     return self._ids
 
-    @property
-    def index(self):
-        """Retourne l’index courant"""
-        return self._index
+    # @property
+    # def index(self):
+    #     """Retourne l’index courant"""
+    #     return self._index
 
     def mettre_a_jour_cartes(self):
         """Met à jour la liste des IDs si le chapitre change"""
