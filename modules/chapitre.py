@@ -48,12 +48,12 @@ class Chapitres:
         nouvelle_carte = Cartes(nouvelle_id, question, reponse, img)
         self.cartes[nouvelle_id] = nouvelle_carte
         self.idCarte += 1
-        print(f"La carte {nouvelle_id} : '{question}', {reponse} a été créée.")
+        print(f"La carte {nouvelle_id} : '{question}' => {reponse} a été créée.")
         self.sauvegarder_cartes()
         return nouvelle_carte
 
     def supprimer_carte(self, id):# on supprime une carte via son id ou sa question jsp 
-        carte = self.cartes.pop(id)
+        self.cartes.pop(id)
         self.sauvegarder_cartes()
 
     def modifier_carte(self, id, question, reponse, img):
@@ -66,6 +66,6 @@ class Chapitres:
         self.sauvegarder_cartes()
 
     def __str__(self): # on affiche toutes les carte du chap
-        print(f"voici les cartes du chapitre {self.nom} ({self.id}) :")
+        print(f" [===== {self.nom} ({self.id}) =====]")
         for carte in self.cartes.values():
-            print(carte)
+            print(f" => ID {carte.id} : Q: {carte.question} | R: {carte.reponse} | Img: {carte.img} | Niveau: {carte.niveau}")
