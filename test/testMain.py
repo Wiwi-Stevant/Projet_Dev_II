@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from modules.flashCard import FlashCards
 from modules.quiz import Quiz
 from modules.chapitre import Chapitres
+from modules.interface import Interface
 
 confirmation = ["o", "oui", "yes", "y",""]
 refus = ["n", "non", "no"]
@@ -220,4 +221,11 @@ def menu_chapitre(chap_charger):
 
 if __name__ == "__main__":
     charger_chapitres()
-    main()
+    #main()
+    callbacks = {
+        'quizz': lambda: quizz(),            # ou partials si vous voulez arguments
+        'flashcards': lambda: flashcards(),
+        'gestion': lambda: gestion_chapitres(),
+    }
+    app = Interface(chapitres_dict=chapitres_dict, callbacks=callbacks)
+    app.mainloop()
