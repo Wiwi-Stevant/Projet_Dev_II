@@ -1,6 +1,6 @@
 from tkinter import *
 
-#Interface graphique    chatgpt
+# Interface graphique
 class Interface(Tk):
     def __init__(self, chapitres_dict=None, callbacks=None):
         super().__init__()
@@ -29,8 +29,9 @@ class Interface(Tk):
             }
         }
         self.current_theme = "light"
+        self.apply_theme()
 
-#configuration de base de la fenetre
+    # configuration de base de la fenetre
     def config_fenetre(self):
         self.title("Jean Révise")
         self.geometry("1080x720")
@@ -40,32 +41,48 @@ class Interface(Tk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-#ajout du texte, boutons, etc...
+    # ajout du texte, boutons, etc...
     def creer_widgets(self):
         self.center_frame = Frame(self, padx=20, pady=20)
         self.center_frame.grid(row=0, column=0, sticky="nsew")
-        self.center_frame.grid_rowconfigure(0, weight=1)
+
+        # Layout : row 0 = titre (pas expansif), row 1 = zone centrale qui prend tout l'espace restant
+        self.center_frame.grid_rowconfigure(0, weight=0)  # titre
+        self.center_frame.grid_rowconfigure(1, weight=1)  # contenu central
         self.center_frame.grid_columnconfigure(0, weight=1)
 
-         # Un frame pour centrer verticalement/horizontalement
+        # --- TITRE en haut, centré ---
+        self.title_label = Label(self.center_frame, text="Menu Principal", font=("Helvetica", 32, "bold"))
+        self.title_label.grid(row=0, column=0, pady=(10, 20), sticky="n")
+
+        # --- zone centrale ---
         self.inner = Frame(self.center_frame)
+        self.inner.grid(row=1, column=0, sticky="nsew")
+        # place inner au centre du frame
         self.inner.place(relx=0.5, rely=0.5, anchor="center")
 
         btn_font = ("Helvetica", 20, "bold")
         btn_width = 24
         btn_height = 2
 
-        # Quatre gros boutons centraux
+        # Quatre gros boutons centraux (disposés en 2x2)
         self.btn_quiz = Button(self.inner, text="Quiz", font=btn_font, width=btn_width, height=btn_height, command=self.open_quiz)
         self.btn_flash = Button(self.inner, text="Flashcards", font=btn_font, width=btn_width, height=btn_height, command=self.open_flashcards)
         self.btn_gestion = Button(self.inner, text="Gérer chapitres", font=btn_font, width=btn_width, height=btn_height, command=self.open_gestion)
         self.btn_quitter = Button(self.inner, text="Quitter", font=btn_font, width=btn_width, height=btn_height, command=self.quit_app)
 
-        # Empilement vertical avec espaces
-        self.btn_quiz.pack(pady=(0, 12))
-        self.btn_flash.pack(pady=(0, 12))
-        self.btn_gestion.pack(pady=(0, 12))
-        self.btn_quitter.pack()
+        # Configurer la grille de l'inner pour 2 colonnes x 2 lignes
+        self.inner.grid_rowconfigure(0, weight=1)
+        self.inner.grid_rowconfigure(1, weight=1)
+        self.inner.grid_columnconfigure(0, weight=1)
+        self.inner.grid_columnconfigure(1, weight=1)
+
+        # Positionner les boutons en grille 2x2
+        pad = 10
+        self.btn_quiz.grid(row=0, column=0, padx=pad, pady=pad, sticky="nsew")
+        self.btn_flash.grid(row=0, column=1, padx=pad, pady=pad, sticky="nsew")
+        self.btn_gestion.grid(row=1, column=0, padx=pad, pady=pad, sticky="nsew")
+        self.btn_quitter.grid(row=1, column=1, padx=pad, pady=pad, sticky="nsew")
 
         # petit bouton bas-droite pour bascule thème
         self.toggle_btn = Button(self, text="Mode sombre", font=("Helvetica", 9), width=12, command=self.toggle_theme)
@@ -74,7 +91,7 @@ class Interface(Tk):
 
         # garder listes pour appliquer thème facilement
         self._big_buttons = [self.btn_quiz, self.btn_flash, self.btn_gestion, self.btn_quitter]
-        self._all_widgets = [self, self.center_frame, self.inner] + self._big_buttons + [self.toggle_btn]
+        self._all_widgets = [self, self.center_frame, self.inner, self.title_label] + self._big_buttons + [self.toggle_btn]
 
     def apply_theme(self):
         t = self.themes[self.current_theme]
@@ -87,6 +104,9 @@ class Interface(Tk):
         # centre et inner
         self.center_frame.configure(bg=t["bg"])
         self.inner.configure(bg=t["bg"])
+
+        # titre
+        self.title_label.configure(bg=t["bg"], fg=t["fg"])
 
         # label/button styles
         for b in self._big_buttons:
@@ -129,7 +149,7 @@ class Interface(Tk):
     def quit_app(self):
         self.destroy()
 
-#ajout d'évenements de clavier et souris
+    # ajout d'évenements de clavier et souris
     def creer_bindings(self):
         pass
 
