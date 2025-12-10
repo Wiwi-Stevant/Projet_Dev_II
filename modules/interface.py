@@ -6,6 +6,26 @@ class Interface(Tk):
         super().__init__()
         self.config_fenetre()
         self.creer_widgets()
+        # thèmes
+        self.themes = {
+            "light": {
+                "bg": "#5AEBFC",
+                "fg": "#1749B3",
+                "button_bg": "#ffffff",
+                "button_fg": "#1749B3",
+                "small_btn_bg": "#1749B3",
+                "small_btn_fg": "#ffffff",
+            },
+            "dark": {
+                "bg": "#000F3B",
+                "fg": "#E8F6FF",
+                "button_bg": "#1749B3",
+                "button_fg": "#E8F6FF",
+                "small_btn_bg": "#E8F6FF",
+                "small_btn_fg": "#000F3B",
+            }
+        }
+        self.current_theme = "light"
 
 #configuration de base de la fenetre
     def config_fenetre(self):
