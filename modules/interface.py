@@ -9,9 +9,10 @@ class Interface(Tk):
 
 #configuration de base de la fenetre
     def config_fenetre(self):
-        self.title("Appli de révision")
+        self.title("Jean Révise")
         self.geometry("1080x720")
         self.minsize(480, 360)
+        #self.iconbitmap("../img/logos/jeanReviseLogo.ico")
         self.config(background='#5AEBFC')
 
 #ajout du texte, boutons, etc...
