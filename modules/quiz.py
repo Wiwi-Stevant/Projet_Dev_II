@@ -1,7 +1,5 @@
 from modules.chapitre import Chapitres
 import random
-import os
-import json
 class Quiz:
     def __init__(self, chapitre):
         if isinstance(chapitre, Chapitres): # --> chat GPT
@@ -11,7 +9,7 @@ class Quiz:
             self.chapitre.charger_cartes()
         self.score = 0
 
-#charger un chapitre et tirer une carte aléatoire
+#charger un chapitre et tirer une carte aléatoirement
     def tirer_cartes(self): 
         listeCartes = list(self.chapitre.cartes.values())
         return random.choice(listeCartes)
