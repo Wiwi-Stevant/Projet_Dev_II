@@ -84,9 +84,9 @@ class Interface(Tk):
         self.btn_gestion.grid(row=1, column=0, padx=pad, pady=pad, sticky="nsew")
         self.btn_quitter.grid(row=1, column=1, padx=pad, pady=pad, sticky="nsew")
 
-        # petit bouton bas-droite pour bascule thème
+        # petit bouton bas-droite pour basculer de thème
         self.toggle_btn = Button(self, text="Mode sombre", font=("Helvetica", 9), width=12, command=self.toggle_theme)
-        # place en bas droite avec marge
+        # place en bas à droite avec marge
         self.toggle_btn.place(relx=1.0, rely=1.0, anchor="se", x=-12, y=-12)
 
         # garder listes pour appliquer thème facilement
@@ -149,7 +149,7 @@ class Interface(Tk):
     def quit_app(self):
         self.destroy()
 
-    # ajout d'évenements de clavier et souris
+    # ajout d'événements de clavier et de souris
     def creer_bindings(self):
         pass
 
