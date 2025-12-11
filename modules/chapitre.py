@@ -10,12 +10,12 @@ class Chapitres:
         self.cartes = {}
         self.idCarte = 1
         self.nom = nom
-        self.sauvgarde = f"{self.nom}.json".lower() #on met le non du chapitre avec .json pour dire quel fichier gere la sauvgarde du chap
+        self.sauvegarde = f"{self.nom}.json".lower() #on met le nom du chapitre avec .json pour dire quel fichier gere la sauvgarde du chap
 
-    def _get_data_path(self): # chemin du fichier de sauvgarde (chat GPT)
+    def _get_data_path(self): # chemin du fichier de sauvegarde (chat GPT)
         data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
         os.makedirs(data_dir, exist_ok=True)
-        return os.path.join(data_dir, self.sauvgarde)
+        return os.path.join(data_dir, self.sauvegarde)
 
     def charger_cartes(self):# On récupère les cartes depuis le json
         fichier_path = self._get_data_path() 
@@ -52,7 +52,7 @@ class Chapitres:
         self.sauvegarder_cartes()
         return nouvelle_carte
 
-    def supprimer_carte(self, id):# on supprime une carte via son id ou sa question jsp 
+    def supprimer_carte(self, id):# on supprime une carte via son id 
         self.cartes.pop(id)
         self.sauvegarder_cartes()
 
@@ -65,7 +65,7 @@ class Chapitres:
         carte.img = img
         self.sauvegarder_cartes()
 
-    def __str__(self): # on affiche toutes les carte du chap
+    def __str__(self): # on affiche toutes les cartes du chapitre
         print(f" [===== {self.nom} ({self.id}) =====]")
         for carte in self.cartes.values():
             print(f" => ID {carte.id} : Q: {carte.question} | R: {carte.reponse} | Img: {carte.img} | Niveau: {carte.niveau}")
