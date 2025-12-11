@@ -34,7 +34,7 @@ class FlashCards:
 
     @property
     def index(self):
-        """Retourne l’index courant"""
+        """Retourne l index courant"""
         return self._index
 
     def mettre_a_jour_cartes(self):
@@ -56,7 +56,7 @@ class FlashCards:
     def retourner(self, id_carte):
         """Retourne la réponse de la carte sélectionnée"""
         if id_carte not in self._chapitre.cartes:
-            raise FlashCardError(f"La carte avec l’ID {id_carte} n’existe pas")
+            raise FlashCardError(f"La carte avec l ID {id_carte} n existe pas")
         return self._chapitre.cartes[id_carte].reponse
 
     def carte_suivante(self):
