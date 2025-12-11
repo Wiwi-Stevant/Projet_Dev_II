@@ -221,7 +221,6 @@ def menu_chapitre(chap_charger):
 
 if __name__ == "__main__":
     charger_chapitres()
-    #main()
     callbacks = {
         'quizz': lambda: quizz(),            # ou partials si vous voulez arguments
         'flashcards': lambda: flashcards(),
