@@ -24,7 +24,7 @@ def charger_chapitres(): # -> chat GPT
 
 def main():
     print("""\n ===== Menu Principal =====
-Bonjour, quel option souhaitez-vous exécuter ?
+Bonjour, quelle option souhaitez-vous exécuter ?
     => 1. Lancer le quiz
     => 2. Lancer les flashcards
     => 3. Gérer les chapitres
@@ -124,7 +124,6 @@ def gestion_chapitres():
     else:
         print("Voulez-vous créer ce chapitre ? (o/n) :")
         reponse = input().strip().lower()
-        #print (chapitres_dict)
 
         if reponse in confirmation:
             chap = Chapitres(nom_chap)
@@ -148,7 +147,7 @@ def menu_chapitre(chap_charger):
             print("\n <== Création d'une nouvelle carte ==>")
             question = input("Entrez la question de la carte : ").strip()
             reponse = input("Entrez la réponse de la carte : ").strip()
-            img = input("Entrez le chemin de l'image associée (laisser vide si aucune) : ").strip()
+            img = input("Entrez le chemin de l'image associée (laissez vide si aucune) : ").strip()
             print(f"""\nVoici les informations de la nouvelle carte :
     => question : {question}
     => réponse : {reponse}
@@ -203,7 +202,7 @@ def menu_chapitre(chap_charger):
                 else:
                     print("Modifications annulées.\n")
             else:
-                print("Modification annulée.\n")
+                print("Modifications annulées.\n")
 
         elif choix == "4":
             print("\n <== Affichage des cartes ==>")
