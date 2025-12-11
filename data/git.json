@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "reponse": "git pull",
+        "question": "quel commande permet de récuperer les modification de tout les autres utilisateur qui ont push leur code au préalable ?",
+        "img": "",
+        "niveau": 4
+    },
+    {
+        "id": 2,
+        "reponse": "git push",
+        "question": "quel commande permet d'envoyer sont commit ?",
+        "img": "",
+        "niveau": 4
+    },
+    {
+        "id": 3,
+        "reponse": "markdown",
+        "question": "en quel language est fait generalement un wiki sur git ?",
+        "img": "",
+        "niveau": 4
+    }
+]
