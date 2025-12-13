@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import simpledialog
 import os
 
 from modules.chapitre import Chapitres
@@ -107,9 +108,18 @@ class Interface(Tk):
             return self.show_frame(frame_name)
 
         sel = self._choose_chapter()
-        if sel:
-            self.selected_chapter = sel
-            self.show_frame(frame_name)
+        if not sel:
+            return
+
+        # prevent launching Quiz or Flashcards if the chapter has no cards
+        chap = self.chapitres.get(sel)
+        if frame_name in ("QuizView", "FlashcardView"):
+            if not chap or not chap.cartes:
+                messagebox.showwarning("Chapitre vide", "Le chapitre sélectionné ne contient aucune carte.\nVeuillez ajouter des cartes avant de lancer le Quiz ou les Flashcards.")
+                return
+
+        self.selected_chapter = sel
+        self.show_frame(frame_name)
 
     def _choose_chapter(self):
         # modal dialog to choose a chapter from the existing list
@@ -472,9 +482,7 @@ class GestionChapitreView(Frame):
         self.liste = Listbox(self.center, height=8)
         self.liste.pack(pady=10)
 
-        # entry used for creating chapters (and displays selected name)
-        self.nom = Entry(self.center)
-        self.nom.pack(pady=5)
+        # (removed single-line chapter entry — selection/creation handled via modals)
 
         # management UI for a selected chapter
         self.chapter_label = Label(self.center, text="", font=("Helvetica", 20, "bold"))
@@ -497,8 +505,6 @@ class GestionChapitreView(Frame):
             except Exception:
                 pass
             # show chapter management header + buttons
-            self.nom.delete(0, END)
-            self.nom.insert(0, self.app.selected_chapter)
             self.chapter_label.config(text=f"Chapitre : {self.app.selected_chapter}")
             try:
                 self.chapter_label.pack(pady=8)
@@ -531,17 +537,19 @@ class GestionChapitreView(Frame):
                 self.liste.insert(END, nom)
 
     def creer(self):
-        nom = self.nom.get().strip()
+        # prompt user for chapter name (used if UI calls creer directly)
+        name = simpledialog.askstring("Créer un chapitre", "Nom du chapitre:", parent=self)
+        if not name:
+            return
+        nom = name.strip()
         if not nom:
             return
         chap = Chapitres(nom)
         chap.sauvegarder_cartes()
         self.app.chapitres[nom] = chap
-        self.nom.delete(0, END)
         # if we created the chapter that was selected, keep it
         if self.app.selected_chapter == nom:
-            self.nom.delete(0, END)
-            self.nom.insert(0, nom)
+            self.app.selected_chapter = nom
         self.actualiser()
 
     def supprimer(self):
@@ -709,8 +717,8 @@ class GestionChapitreView(Frame):
         self.configure(bg=t["bg"])
         self.center.configure(bg=t["bg"])
         self.title_label.configure(bg=t["bg"], fg=t["fg"])
-        # configure list/entry/label (chapter header may not exist yet)
-        for w in (self.liste, self.nom, getattr(self, 'chapter_label', None)):
+        # configure list/label (chapter header may not exist yet)
+        for w in (self.liste, getattr(self, 'chapter_label', None)):
             if w is None:
                 continue
             try:
