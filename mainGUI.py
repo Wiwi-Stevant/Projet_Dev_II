@@ -136,8 +136,41 @@ class Interface(Tk):
         def on_cancel():
             dlg.destroy()
 
+        # allow creating a new chapter from the chooser
+        def on_create():
+            create_dlg = Toplevel(dlg)
+            create_dlg.title("Créer un chapitre")
+            create_dlg.transient(dlg)
+            create_dlg.grab_set()
+
+            Label(create_dlg, text="Nom du chapitre:").pack(padx=10, pady=8)
+            entry_name = Entry(create_dlg)
+            entry_name.pack(padx=10, pady=4)
+
+            def create_ok():
+                name = entry_name.get().strip()
+                if not name:
+                    messagebox.showwarning("Nom manquant", "Veuillez entrer un nom de chapitre.", parent=create_dlg)
+                    return
+                # create and persist the chapter
+                chap = Chapitres(name)
+                chap.sauvegarder_cartes()
+                self.chapitres[name] = chap
+                selected["name"] = name
+                create_dlg.destroy()
+                dlg.destroy()
+
+            def create_cancel():
+                create_dlg.destroy()
+
+            btns = Frame(create_dlg)
+            btns.pack(pady=8)
+            Button(btns, text="Créer", width=10, command=create_ok).pack(side="left", padx=5)
+            Button(btns, text="Annuler", width=10, command=create_cancel).pack(side="left", padx=5)
+
         btn_frame = Frame(dlg)
         btn_frame.pack(pady=8)
+        Button(btn_frame, text="Créer un chapitre", width=14, command=on_create).pack(side="left", padx=5)
         Button(btn_frame, text="OK", width=10, command=on_ok).pack(side="left", padx=5)
         Button(btn_frame, text="Annuler", width=10, command=on_cancel).pack(side="left", padx=5)
 
@@ -435,18 +468,26 @@ class GestionChapitreView(Frame):
         self.title_label = Label(self.center, text="Gestion des chapitres", font=("Helvetica", 28, "bold"))
         self.title_label.pack(pady=20)
 
+        # list of chapters (used when no chapter preselected)
         self.liste = Listbox(self.center, height=8)
         self.liste.pack(pady=10)
 
+        # entry used for creating chapters (and displays selected name)
         self.nom = Entry(self.center)
         self.nom.pack(pady=5)
 
-        self.btn_add = Button(self.center, text="Créer", command=self.creer)
-        self.btn_del = Button(self.center, text="Supprimer", command=self.supprimer)
-        self.btn_retour = Button(self.center, text="Retour", command=lambda: app.show_frame("MenuPrincipal"))
+        # management UI for a selected chapter
+        self.chapter_label = Label(self.center, text="", font=("Helvetica", 20, "bold"))
 
-        for b in (self.btn_add, self.btn_del, self.btn_retour):
-            b.pack(pady=5)
+        self.btn_add_card = Button(self.center, text="Ajouter une carte", command=self.add_card)
+        self.btn_modify_card = Button(self.center, text="Modifier une carte", command=self.modify_card)
+        self.btn_delete_card = Button(self.center, text="Supprimer une carte", command=self.delete_card)
+        self.btn_view_cards = Button(self.center, text="Voir les cartes", command=self.view_cards)
+        self.btn_return_main = Button(self.center, text="Retour au menu principal", command=lambda: app.show_frame("MenuPrincipal"))
+
+        for b in (self.btn_add_card, self.btn_modify_card, self.btn_delete_card, self.btn_view_cards, self.btn_return_main):
+            # don't pack yet; will be packed when a chapter is selected
+            pass
 
     def actualiser(self):
         # show/hide chapter list depending on whether a chapter was preselected
@@ -455,10 +496,32 @@ class GestionChapitreView(Frame):
                 self.liste.pack_forget()
             except Exception:
                 pass
-            # place the selected chapter into the name entry for reference
+            # show chapter management header + buttons
             self.nom.delete(0, END)
             self.nom.insert(0, self.app.selected_chapter)
+            self.chapter_label.config(text=f"Chapitre : {self.app.selected_chapter}")
+            try:
+                self.chapter_label.pack(pady=8)
+            except Exception:
+                pass
+            # pack action buttons
+            self.btn_add_card.pack(pady=5)
+            self.btn_modify_card.pack(pady=5)
+            self.btn_delete_card.pack(pady=5)
+            self.btn_view_cards.pack(pady=5)
+            self.btn_return_main.pack(pady=10)
         else:
+            # ensure management UI is hidden
+            try:
+                self.chapter_label.pack_forget()
+            except Exception:
+                pass
+            for b in (self.btn_add_card, self.btn_modify_card, self.btn_delete_card, self.btn_view_cards, self.btn_return_main):
+                try:
+                    b.pack_forget()
+                except Exception:
+                    pass
+
             try:
                 self.liste.pack()
             except Exception:
@@ -499,12 +562,169 @@ class GestionChapitreView(Frame):
                 self.app.selected_chapter = None
             self.actualiser()
 
+    # ---------------------
+    # Chapter management actions
+    # ---------------------
+    def _get_current_chap(self):
+        name = self.app.selected_chapter or (self.liste.get(ACTIVE) if self.liste.size() > 0 else None)
+        if not name:
+            messagebox.showwarning("Aucun chapitre", "Aucun chapitre sélectionné.")
+            return None
+        return self.app.chapitres.get(name)
+
+    def add_card(self):
+        chap = self._get_current_chap()
+        if not chap:
+            return
+        dlg = Toplevel(self)
+        dlg.title("Ajouter une carte")
+        dlg.transient(self)
+        dlg.grab_set()
+
+        Label(dlg, text="Question:").pack(padx=10, pady=(10,0))
+        e_q = Entry(dlg, width=60)
+        e_q.pack(padx=10, pady=4)
+        Label(dlg, text="Réponse:").pack(padx=10, pady=(8,0))
+        e_r = Entry(dlg, width=60)
+        e_r.pack(padx=10, pady=4)
+
+        def on_valider():
+            q = e_q.get().strip()
+            r = e_r.get().strip()
+            if not q or not r:
+                messagebox.showwarning("Données manquantes", "Question et réponse requises.", parent=dlg)
+                return
+            if messagebox.askyesno("Confirmation", f"Créer la carte ?\nQuestion: {q}\nRéponse: {r}"):
+                chap.cree_cartes(q, r)
+                messagebox.showinfo("Créé", "La carte a été créée.", parent=dlg)
+                dlg.destroy()
+
+        Button(dlg, text="Valider", command=on_valider).pack(pady=10)
+
+    def modify_card(self):
+        chap = self._get_current_chap()
+        if not chap:
+            return
+
+        sel = Toplevel(self)
+        sel.title("Sélectionner une carte à modifier")
+        sel.transient(self)
+        sel.grab_set()
+
+        lb = Listbox(sel, height=10, width=80)
+        lb.pack(padx=10, pady=8)
+        ids = []
+        for c in chap.cartes.values():
+            lb.insert(END, f"{c.id} - Q: {c.question} | R: {c.reponse}")
+            ids.append(c.id)
+
+        def on_select():
+            idx = lb.curselection()
+            if not idx:
+                return
+            chosen_id = ids[idx[0]]
+            c = chap.cartes[chosen_id]
+            sel.destroy()
+
+            edit = Toplevel(self)
+            edit.title("Modifier la carte")
+            edit.transient(self)
+            edit.grab_set()
+
+            Label(edit, text="Ancienne question:").pack(padx=10, pady=(8,0))
+            Label(edit, text=c.question, wraplength=500).pack(padx=10, pady=4)
+            Label(edit, text="Nouvelle question:").pack(padx=10, pady=(8,0))
+            nq = Entry(edit, width=60)
+            nq.insert(0, c.question)
+            nq.pack(padx=10, pady=4)
+
+            Label(edit, text="Ancienne réponse:").pack(padx=10, pady=(8,0))
+            Label(edit, text=c.reponse, wraplength=500).pack(padx=10, pady=4)
+            Label(edit, text="Nouvelle réponse:").pack(padx=10, pady=(8,0))
+            nr = Entry(edit, width=60)
+            nr.insert(0, c.reponse)
+            nr.pack(padx=10, pady=4)
+
+            def on_modify():
+                new_q = nq.get().strip()
+                new_r = nr.get().strip()
+                if not new_q or not new_r:
+                    messagebox.showwarning("Données manquantes", "Question et réponse requises.", parent=edit)
+                    return
+                if messagebox.askyesno("Confirmation", f"Modifier la carte ?\nQuestion: {new_q}\nRéponse: {new_r}"):
+                    chap.modifier_carte(chosen_id, new_q, new_r, c.img)
+                    messagebox.showinfo("Modifié", "La carte a été modifiée.", parent=edit)
+                    edit.destroy()
+
+            Button(edit, text="Valider", command=on_modify).pack(pady=10)
+
+        Button(sel, text="Modifier la carte sélectionnée", command=on_select).pack(pady=6)
+
+    def delete_card(self):
+        chap = self._get_current_chap()
+        if not chap:
+            return
+
+        dlg = Toplevel(self)
+        dlg.title("Supprimer une carte")
+        dlg.transient(self)
+        dlg.grab_set()
+
+        lb = Listbox(dlg, height=10, width=80)
+        lb.pack(padx=10, pady=8)
+        ids = []
+        for c in chap.cartes.values():
+            lb.insert(END, f"{c.id} - Q: {c.question} | R: {c.reponse}")
+            ids.append(c.id)
+
+        def on_del():
+            sel = lb.curselection()
+            if not sel:
+                return
+            cid = ids[sel[0]]
+            c = chap.cartes[cid]
+            if messagebox.askyesno("Confirmation", f"Supprimer la carte ?\nQuestion: {c.question}\nRéponse: {c.reponse}"):
+                chap.supprimer_carte(cid)
+                messagebox.showinfo("Supprimé", "La carte a été supprimée.", parent=dlg)
+                dlg.destroy()
+
+        Button(dlg, text="Supprimer la carte sélectionnée", command=on_del).pack(pady=6)
+
+    def view_cards(self):
+        chap = self._get_current_chap()
+        if not chap:
+            return
+        dlg = Toplevel(self)
+        dlg.title(f"Cartes du chapitre {chap.nom}")
+        dlg.transient(self)
+        dlg.grab_set()
+
+        text = Text(dlg, width=100, height=25)
+        text.pack(padx=10, pady=8)
+        for c in chap.cartes.values():
+            text.insert(END, f"ID: {c.id}\nQuestion: {c.question}\nRéponse: {c.reponse}\nImage: {c.img}\nNiveau: {c.niveau}\n---\n")
+        Button(dlg, text="Retour", command=dlg.destroy).pack(pady=6)
+
     def apply_theme(self, t):
         self.configure(bg=t["bg"])
         self.center.configure(bg=t["bg"])
         self.title_label.configure(bg=t["bg"], fg=t["fg"])
-        for w in (self.liste, self.nom, self.btn_add, self.btn_del, self.btn_retour):
-            w.configure(bg=t["button_bg"], fg=t["button_fg"], bd=0)
+        # configure list/entry/label (chapter header may not exist yet)
+        for w in (self.liste, self.nom, getattr(self, 'chapter_label', None)):
+            if w is None:
+                continue
+            try:
+                w.configure(bg=t["button_bg"], fg=t["button_fg"], bd=0)
+            except Exception:
+                pass
+        # configure action buttons (if present)
+        for b in (getattr(self, 'btn_add_card', None), getattr(self, 'btn_modify_card', None), getattr(self, 'btn_delete_card', None), getattr(self, 'btn_view_cards', None), getattr(self, 'btn_return_main', None)):
+            if b is None:
+                continue
+            try:
+                b.configure(bg=t["button_bg"], fg=t["button_fg"], bd=0)
+            except Exception:
+                pass
 
 
 if __name__ == "__main__":
