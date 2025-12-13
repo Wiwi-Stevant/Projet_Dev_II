@@ -2,6 +2,7 @@ import os
 from modules.flashCard import FlashCards
 from modules.quiz import Quiz
 from modules.chapitre import Chapitres
+from utils.utilitaire import verification_chapitre
 
 confirmation = ["o", "oui", "yes", "y",""]
 refus = ["n", "non", "no"]
@@ -52,15 +53,11 @@ def quizz():
 
     chap = input("\nVeuillez entrer le nom du chapitre : ").strip()
     print("")
-
-    if chap not in chapitres_dict:
-        print("Chapitre introuvable.")
-        quizz()
-
-    else:
+    if verification_chapitre(chap, chapitres_dict):
         quiz = Quiz(chap)
         quiz.jouer()
-
+    else:
+        return
     main()
 
 def flashcards():
@@ -76,8 +73,7 @@ def flashcards():
     nom_chap = input("\nVeuillez entrer le nom du chapitre : ").strip()
     print("")
 
-    if nom_chap not in chapitres_dict:
-        print("Chapitre introuvable.")
+    if  not verification_chapitre(nom_chap, chapitres_dict):
         return
 
     chap = chapitres_dict[nom_chap]
