@@ -19,7 +19,7 @@ class Chapitres:
 
     def charger_cartes(self):# On récupère les cartes depuis le json
         fichier_path = self._get_data_path() 
-        try:
+        if os.path.exists(fichier_path):
             with open(fichier_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 if isinstance(data, list):
@@ -33,7 +33,7 @@ class Chapitres:
                         )
                         self.cartes[carte.id] = carte
                         self.idCarte = max(self.idCarte, carte.id + 1)
-        except FileNotFoundError:
+        else:
             print("Le Chapitre n'existe pas encore.")
 
     def sauvegarder_cartes(self):  # On sauvegarde les cartes dans le json
@@ -48,12 +48,13 @@ class Chapitres:
         nouvelle_carte = Cartes(nouvelle_id, question, reponse, img)
         self.cartes[nouvelle_id] = nouvelle_carte
         self.idCarte += 1
-        print(f"La carte {nouvelle_id} : '{question}' => {reponse} a été créée.")
+        print(f"La carte {nouvelle_id} : '{question}', {reponse} a été créée.")
         self.sauvegarder_cartes()
         return nouvelle_carte
 
     def supprimer_carte(self, id):# on supprime une carte via son id 
         self.cartes.pop(id)
+
         self.sauvegarder_cartes()
 
     def modifier_carte(self, id, question, reponse, img):
@@ -67,5 +68,6 @@ class Chapitres:
 
     def __str__(self): # on affiche toutes les cartes du chapitre
         print(f" [===== {self.nom} ({self.id}) =====]")
+
         for carte in self.cartes.values():
-            print(f" => ID {carte.id} : Q: {carte.question} | R: {carte.reponse} | Img: {carte.img} | Niveau: {carte.niveau}")
+            print(carte)
