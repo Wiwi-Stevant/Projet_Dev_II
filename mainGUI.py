@@ -27,6 +27,7 @@ class Interface(Tk):
         self.quiz = None
         self.flashcards = None
         self.carte_actuelle = None
+        self.selected_chapter = None
 
         # thèmes
         self.themes = {
@@ -91,8 +92,57 @@ class Interface(Tk):
 
     def show_frame(self, name):
         frame = self.frames[name]
+        # clearing selection when returning to main menu
+        if name == "MenuPrincipal":
+            self.selected_chapter = None
         frame.actualiser()
         frame.tkraise()
+
+    def open_and_select(self, frame_name):
+        # prompt the user to choose a chapter before opening the frame
+        if not self.chapitres:
+            messagebox.showinfo("Aucun chapitre", "Aucun chapitre disponible.")
+            # still show the frame so user can create chapters in Gestion
+            self.selected_chapter = None
+            return self.show_frame(frame_name)
+
+        sel = self._choose_chapter()
+        if sel:
+            self.selected_chapter = sel
+            self.show_frame(frame_name)
+
+    def _choose_chapter(self):
+        # modal dialog to choose a chapter from the existing list
+        dlg = Toplevel(self)
+        dlg.title("Choisir un chapitre")
+        dlg.transient(self)
+        dlg.grab_set()
+
+        Label(dlg, text="Sélectionnez un chapitre:").pack(padx=10, pady=8)
+        lb = Listbox(dlg, height=8)
+        lb.pack(padx=10, pady=4)
+        for nom in self.chapitres:
+            lb.insert(END, nom)
+
+        selected = {"name": None}
+
+        def on_ok():
+            try:
+                selected["name"] = lb.get(ACTIVE)
+            except Exception:
+                selected["name"] = None
+            dlg.destroy()
+
+        def on_cancel():
+            dlg.destroy()
+
+        btn_frame = Frame(dlg)
+        btn_frame.pack(pady=8)
+        Button(btn_frame, text="OK", width=10, command=on_ok).pack(side="left", padx=5)
+        Button(btn_frame, text="Annuler", width=10, command=on_cancel).pack(side="left", padx=5)
+
+        self.wait_window(dlg)
+        return selected["name"]
 
     # =====================
     # THÈMES
@@ -134,9 +184,9 @@ class MenuPrincipal(Frame):
         self.inner.pack(expand=True)
 
         btn_font = ("Helvetica", 20, "bold")
-        self.btn_quiz = Button(self.inner, text="Quiz", font=btn_font, command=lambda: app.show_frame("QuizView"))
-        self.btn_flash = Button(self.inner, text="Flashcards", font=btn_font, command=lambda: app.show_frame("FlashcardView"))
-        self.btn_gestion = Button(self.inner, text="Gérer chapitres", font=btn_font, command=lambda: app.show_frame("GestionChapitreView"))
+        self.btn_quiz = Button(self.inner, text="Quiz", font=btn_font, command=lambda: app.open_and_select("QuizView"))
+        self.btn_flash = Button(self.inner, text="Flashcards", font=btn_font, command=lambda: app.open_and_select("FlashcardView"))
+        self.btn_gestion = Button(self.inner, text="Gérer chapitres", font=btn_font, command=lambda: app.open_and_select("GestionChapitreView"))
         self.btn_quitter = Button(self.inner, text="Quitter", font=btn_font, command=app.destroy)
 
         for i in range(2):
@@ -197,13 +247,28 @@ class QuizView(Frame):
         self.btn_retour.pack(pady=20)
 
     def actualiser(self):
-        self.liste.delete(0, END)
-        for nom in self.app.chapitres:
-            self.liste.insert(END, nom)
+        # show/hide chapter list depending on whether a chapter was preselected
+        if self.app.selected_chapter:
+            try:
+                self.liste.pack_forget()
+            except Exception:
+                pass
+        else:
+            # ensure listbox is visible and populated
+            try:
+                self.liste.pack()
+            except Exception:
+                pass
+            self.liste.delete(0, END)
+            for nom in self.app.chapitres:
+                self.liste.insert(END, nom)
         
 
     def lancer(self):
-        nom = self.liste.get(ACTIVE)
+        if self.app.selected_chapter:
+            nom = self.app.selected_chapter
+        else:
+            nom = self.liste.get(ACTIVE)
         self.app.quiz = Quiz(self.app.chapitres[nom])
         self.app.carte_actuelle = self.app.quiz.tirer_cartes()
         self.question.config(text=self.app.carte_actuelle.question)
@@ -266,9 +331,21 @@ class FlashcardView(Frame):
         self._showing_answer = False
 
     def actualiser(self):
-        self.liste.delete(0, END)
-        for nom in self.app.chapitres:
-            self.liste.insert(END, nom)
+        # show/hide chapter list depending on whether a chapter was preselected
+        if self.app.selected_chapter:
+            try:
+                self.liste.pack_forget()
+            except Exception:
+                pass
+        else:
+            try:
+                self.liste.pack()
+            except Exception:
+                pass
+            self.liste.delete(0, END)
+            for nom in self.app.chapitres:
+                self.liste.insert(END, nom)
+
         # reset flashcard state when the flashcard view is refreshed
         self.app.flashcards = None
         self.app.carte_actuelle = None
@@ -282,7 +359,10 @@ class FlashcardView(Frame):
     def afficher(self):
         # initialize flashcards for selected chapter if needed
         if not self.app.flashcards:
-            nom = self.liste.get(ACTIVE)
+            if self.app.selected_chapter:
+                nom = self.app.selected_chapter
+            else:
+                nom = self.liste.get(ACTIVE)
             self.app.flashcards = FlashCards(self.app.chapitres[nom])
             self.app.carte_actuelle = None
             self._showing_answer = False
@@ -324,7 +404,10 @@ class FlashcardView(Frame):
     def suivant(self):
         self.app.flashcards.chapitre.sauvegarder_cartes()
         self.app.carte_actuelle = self.app.flashcards.tirer_carte()
-        self.question.config(text=self.app.carte_actuelle.question)
+        if self.app.carte_actuelle:
+            self.question.config(text=self.app.carte_actuelle.question)
+        else:
+            self.question.config(text="")
 
     def apply_theme(self, t):
         self.configure(bg=t["bg"])
@@ -366,9 +449,23 @@ class GestionChapitreView(Frame):
             b.pack(pady=5)
 
     def actualiser(self):
-        self.liste.delete(0, END)
-        for nom in self.app.chapitres:
-            self.liste.insert(END, nom)
+        # show/hide chapter list depending on whether a chapter was preselected
+        if self.app.selected_chapter:
+            try:
+                self.liste.pack_forget()
+            except Exception:
+                pass
+            # place the selected chapter into the name entry for reference
+            self.nom.delete(0, END)
+            self.nom.insert(0, self.app.selected_chapter)
+        else:
+            try:
+                self.liste.pack()
+            except Exception:
+                pass
+            self.liste.delete(0, END)
+            for nom in self.app.chapitres:
+                self.liste.insert(END, nom)
 
     def creer(self):
         nom = self.nom.get().strip()
@@ -378,15 +475,28 @@ class GestionChapitreView(Frame):
         chap.sauvegarder_cartes()
         self.app.chapitres[nom] = chap
         self.nom.delete(0, END)
+        # if we created the chapter that was selected, keep it
+        if self.app.selected_chapter == nom:
+            self.nom.delete(0, END)
+            self.nom.insert(0, nom)
         self.actualiser()
 
     def supprimer(self):
-        nom = self.liste.get(ACTIVE)
+        if self.app.selected_chapter:
+            nom = self.app.selected_chapter
+        else:
+            try:
+                nom = self.liste.get(ACTIVE)
+            except Exception:
+                return
         if messagebox.askyesno("Confirmation", f"Supprimer {nom} ?"):
             path = self.app.chapitres[nom]._get_data_path()
             if os.path.exists(path):
                 os.remove(path)
             del self.app.chapitres[nom]
+            # if we deleted the selected chapter, clear selection
+            if self.app.selected_chapter == nom:
+                self.app.selected_chapter = None
             self.actualiser()
 
     def apply_theme(self, t):
