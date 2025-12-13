@@ -200,6 +200,7 @@ class QuizView(Frame):
         self.liste.delete(0, END)
         for nom in self.app.chapitres:
             self.liste.insert(END, nom)
+        
 
     def lancer(self):
         nom = self.liste.get(ACTIVE)
@@ -254,26 +255,61 @@ class FlashcardView(Frame):
         self.question = Label(self.center, text="", wraplength=800, font=("Helvetica", 16))
         self.question.pack(pady=30)
 
-        self.btn_show = Button(self.center, text="Afficher réponse", command=self.afficher)
+        self.btn_show = Button(self.center, text="Suivant", command=self.afficher)
         self.btn_ok = Button(self.center, text="Je connais", command=self.connait)
         self.btn_nok = Button(self.center, text="Je ne connais pas", command=self.ne_connait_pas)
         self.btn_retour = Button(self.center, text="Retour", command=lambda: app.show_frame("MenuPrincipal"))
 
         for b in (self.btn_show, self.btn_ok, self.btn_nok, self.btn_retour):
             b.pack(pady=5)
+        # flag to track whether the current card's question is shown and next click should show answer
+        self._showing_answer = False
 
     def actualiser(self):
         self.liste.delete(0, END)
         for nom in self.app.chapitres:
             self.liste.insert(END, nom)
+        # reset flashcard state when the flashcard view is refreshed
+        self.app.flashcards = None
+        self.app.carte_actuelle = None
+        self._showing_answer = False
+        try:
+            self.btn_show.configure(text="Suivant")
+        except Exception:
+            pass
+        self.question.config(text="")
 
     def afficher(self):
+        # initialize flashcards for selected chapter if needed
         if not self.app.flashcards:
             nom = self.liste.get(ACTIVE)
             self.app.flashcards = FlashCards(self.app.chapitres[nom])
-        self.app.carte_actuelle = self.app.flashcards.tirer_carte()
-        self.question.config(text=self.app.carte_actuelle.question)
-        messagebox.showinfo("Réponse", self.app.carte_actuelle.reponse)
+            self.app.carte_actuelle = None
+            self._showing_answer = False
+
+        # if there is no current card, draw one and show its question
+        if not self.app.carte_actuelle:
+            self.app.carte_actuelle = self.app.flashcards.tirer_carte()
+            self.question.config(text=self.app.carte_actuelle.question)
+            self._showing_answer = True
+            # after drawing question, button should offer to show the answer
+            self.btn_show.configure(text="Afficher réponse")
+            return
+
+        # if question currently shown, show the answer
+        if self._showing_answer:
+            # ensure the label update is visible before modal dialog
+            self.update_idletasks()
+            messagebox.showinfo("Réponse", self.app.carte_actuelle.reponse)
+            self._showing_answer = False
+            # after showing answer, button goes back to initial action
+            self.btn_show.configure(text="Afficher réponse")
+        else:
+            # show a new question (draw next random card)
+            self.app.carte_actuelle = self.app.flashcards.tirer_carte()
+            self.question.config(text=self.app.carte_actuelle.question)
+            self._showing_answer = True
+            self.btn_show.configure(text="Afficher réponse")
 
     def connait(self):
         if self.app.carte_actuelle:
