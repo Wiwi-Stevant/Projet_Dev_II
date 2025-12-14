@@ -1,23 +1,23 @@
 [
     {
         "id": 1,
-        "question": "quelle est la capitale de la France?",
         "reponse": "Paris",
+        "question": "quelle est la capitale de la France?",
         "img": "",
         "niveau": 4
     },
     {
         "id": 2,
-        "question": "que donne 2 + 2 ?",
         "reponse": "4",
+        "question": "que donne 2 + 2 ?",
         "img": "",
-        "niveau": 4
+        "niveau": 6
     },
     {
         "id": 3,
-        "question": "quelle est la plus grande planète du système solaire?",
         "reponse": "Jupiter",
+        "question": "quelle est la plus grande planète du système solaire?",
         "img": "",
-        "niveau": 4
+        "niveau": 2
     }
 ]

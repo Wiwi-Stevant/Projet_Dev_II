@@ -22,6 +22,7 @@ class Interface(Tk):
         self.title("Jean Révise")
         self.geometry("1080x720")
         self.minsize(600, 400)
+        self.iconbitmap("img\logos\jeanReviseSansLogo.ico")
 
         # données
         self.chapitres = {}
@@ -398,40 +399,49 @@ class FlashcardView(Frame):
         except Exception:
             pass
         self.question.config(text="")
+        # cacher les boutons tant qu'aucune question n'est affichée
+        self.btn_ok.pack_forget()
+        self.btn_nok.pack_forget()
+
+        # reset du bouton principal
+        self.btn_show.pack(pady=5)
+        self.btn_show.configure(text="Suivant")
+        
 
     def afficher(self):
-        # initialize flashcards for selected chapter if needed
+        self.btn_show.pack(pady=5)
+        # initialisation des flashcards
         if not self.app.flashcards:
             if self.app.selected_chapter:
                 nom = self.app.selected_chapter
             else:
                 nom = self.liste.get(ACTIVE)
+
             self.app.flashcards = FlashCards(self.app.chapitres[nom])
             self.app.carte_actuelle = None
-            self._showing_answer = False
 
-        # if there is no current card, draw one and show its question
+        # aucune carte → tirer une carte
         if not self.app.carte_actuelle:
             self.app.carte_actuelle = self.app.flashcards.tirer_carte()
             self.question.config(text=self.app.carte_actuelle.question)
-            self._showing_answer = True
-            # after drawing question, button should offer to show the answer
+
+            self.btn_ok.pack(pady=5)
+            self.btn_nok.pack(pady=5)
+
+            self._showing_answer = False
             self.btn_show.configure(text="Afficher réponse")
             return
 
-        # if question currently shown, show the answer
-        if self._showing_answer:
-            # ensure the label update is visible before modal dialog
-            self.update_idletasks()
-            messagebox.showinfo("Réponse", self.app.carte_actuelle.reponse)
-            self._showing_answer = False
-            # after showing answer, button goes back to initial action
-            self.btn_show.configure(text="Afficher réponse")
-        else:
-            # show a new question (draw next random card)
-            self.app.carte_actuelle = self.app.flashcards.tirer_carte()
-            self.question.config(text=self.app.carte_actuelle.question)
+        # afficher la réponse
+        if not self._showing_answer:
+            self.question.config(text=self.app.carte_actuelle.reponse)
             self._showing_answer = True
+            self.btn_show.configure(text="Revoir la question")
+
+        # revenir à la question
+        else:
+            self.question.config(text=self.app.carte_actuelle.question)
+            self._showing_answer = False
             self.btn_show.configure(text="Afficher réponse")
 
     def connait(self):
@@ -451,6 +461,8 @@ class FlashcardView(Frame):
             self.question.config(text=self.app.carte_actuelle.question)
         else:
             self.question.config(text="")
+        self.btn_ok.pack(pady=5)
+        self.btn_nok.pack(pady=5)
 
     def apply_theme(self, t):
         self.configure(bg=t["bg"])
