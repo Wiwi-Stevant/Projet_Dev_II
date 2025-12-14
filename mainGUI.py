@@ -1,9 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import simpledialog
-from PIL import Image, ImageTk
-
 import os
+from PIL import Image, ImageTk
+from tkinter import filedialog
+
+
 
 from modules.chapitre import Chapitres
 from modules.quiz import Quiz
@@ -265,16 +267,12 @@ class QuizView(Frame):
     def __init__(self, parent, app):
         super().__init__(parent)
         self.app = app
-        self.photo = None
-        self.quiz = None
-        self.carte = None
 
         # center everything in this frame
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.center = Frame(self)
-        self.center.pack(expand=True)
-
+        self.center.grid(row=0, column=0)
 
         self.title_label = Label(self.center, text="Quiz", font=("Helvetica", 28, "bold"))
         self.title_label.pack(pady=20)
@@ -282,18 +280,11 @@ class QuizView(Frame):
         self.liste = Listbox(self.center, height=6)
         self.liste.pack(pady=10)
 
-        # --- Carte visuelle ---
-        self.card = Frame(self.center, bg="white", bd=2, relief="raised")
-        self.card.pack(padx=40, pady=20, fill="x")
+        self.question = Label(self.center, text="", wraplength=800, font=("Helvetica", 16))
+        self.question.pack(pady=20)
 
-        self.question= Label(self.card, text="", wraplength=700, font=("Helvetica", 18, "bold"), bg="white")
-        self.question.pack(padx=20, pady=20)
-
-        self.image_label = Label(self.center)
-        self.image_label.pack(pady=10)
-
-        self.reponse = Entry(self.center, width=40, font=("Helvetica", 14))
-        self.reponse.pack(pady=10)
+        self.reponse = Entry(self.center, width=40)
+        self.reponse.pack()
 
         self.btn_valider = Button(self.center, text="Valider", command=self.valider)
         self.btn_lancer = Button(self.center, text="Lancer", command=self.lancer)
@@ -301,78 +292,49 @@ class QuizView(Frame):
 
         self.btn_lancer.pack(pady=5)
         self.btn_valider.pack(pady=5)
-        self.btn_retour.pack(pady=15)
-
-
-    def afficher_image(self, chemin):
-        if not chemin or not os.path.exists(chemin):
-            self.image_label.config(image="", text="")
-            return
-
-        img = Image.open(chemin)
-        img = img.resize((300, 200))
-        self.photo = ImageTk.PhotoImage(img)
-
-        self.image_label.config(image=self.photo)
-        self.image_label.image = self.photo
-   
-
-    # def actualiser(self):
-    #     # show/hide chapter list depending on whether a chapter was preselected
-    #     if self.app.selected_chapter:
-    #         try:
-    #             self.liste.pack_forget()
-    #         except Exception:
-    #             pass
-    #     else:
-    #         # ensure listbox is visible and populated
-    #         try:
-    #             self.liste.pack()
-    #         except Exception:
-    #             pass
-    #         self.liste.delete(0, END)
-    #         for nom in self.app.chapitres:
-    #             self.liste.insert(END, nom)
+        self.btn_retour.pack(pady=20)
 
     def actualiser(self):
-        self.liste.delete(0, END)
-        for nom in self.app.chapitres:
-            self.liste.insert(END, nom)
+        # show/hide chapter list depending on whether a chapter was preselected
+        if self.app.selected_chapter:
+            try:
+                self.liste.pack_forget()
+            except Exception:
+                pass
+        else:
+            # ensure listbox is visible and populated
+            try:
+                self.liste.pack()
+            except Exception:
+                pass
+            self.liste.delete(0, END)
+            for nom in self.app.chapitres:
+                self.liste.insert(END, nom)
         
 
-    # def lancer(self):
-    #     if self.app.selected_chapter:
-    #         nom = self.app.selected_chapter
-    #     else:
-    #         nom = self.liste.get(ACTIVE)
-    #     self.app.quiz = Quiz(self.app.chapitres[nom])
-    #     self.app.carte_actuelle = self.app.quiz.tirer_cartes()
-    #     self.question.config(text=self.app.carte_actuelle.question)
     def lancer(self):
-        self.quiz = Quiz(self.app.chapitres[self.app.selected_chapter])
-        self.carte = self.quiz.tirer_cartes()
-        self.question.config(text=self.carte.question)
-        self.afficher_image("img/téléchargement.jpeg")
-
-    
+        if self.app.selected_chapter:
+            nom = self.app.selected_chapter
+        else:
+            nom = self.liste.get(ACTIVE)
+        self.app.quiz = Quiz(self.app.chapitres[nom])
+        self.app.carte_actuelle = self.app.quiz.tirer_cartes()
+        self.question.config(text=self.app.carte_actuelle.question)
 
     def valider(self):
-        if not self.carte:
+        carte = self.app.carte_actuelle
+        if not carte:
             return
-        
-        if self.reponse.get().lower() == self.carte.reponse.lower():
-            self.carte.connue()
-            messagebox.showinfo("Quiz", "Bonne réponse ✔")
+        if self.reponse.get().lower() == carte.reponse.lower():
+            carte.connue()
+            messagebox.showinfo("Quiz", "Bonne réponse")
         else:
-            self.carte.pas_connue()
-            messagebox.showinfo("Quiz", f"Mauvaise réponse ❌\n{self.carte.reponse}")
-        self.quiz.chapitre.sauvegarder_cartes()
+            carte.pas_connue()
+            messagebox.showinfo("Quiz", f"Mauvaise réponse : {carte.reponse}")
+        self.app.quiz.chapitre.sauvegarder_cartes()
         self.reponse.delete(0, END)
-
-        self.carte = self.quiz.tirer_cartes()
-        self.question.config(text=self.carte.question)
-        self.afficher_image(self.carte.img)
-
+        self.app.carte_actuelle = self.app.quiz.tirer_cartes()
+        self.question.config(text=self.app.carte_actuelle.question)
 
     def apply_theme(self, t):
         self.configure(bg=t["bg"])
@@ -405,6 +367,13 @@ class FlashcardView(Frame):
 
         self.question = Label(self.center, text="", wraplength=800, font=("Helvetica", 16))
         self.question.pack(pady=30)
+
+        # === AJOUT ===
+        self.image_label = Label(self.center)
+        self.image_label.pack(pady=10)
+
+        self.photo = None  # IMPORTANT pour garder la référence de l'image
+
 
         self.btn_show = Button(self.center, text="Suivant", command=self.afficher)
         self.btn_ok = Button(self.center, text="Je connais", command=self.connait)
@@ -448,7 +417,7 @@ class FlashcardView(Frame):
         # reset du bouton principal
         self.btn_show.pack(pady=5)
         self.btn_show.configure(text="Suivant")
-        
+
 
     def afficher(self):
         self.btn_show.pack(pady=5)
@@ -466,6 +435,7 @@ class FlashcardView(Frame):
         if not self.app.carte_actuelle:
             self.app.carte_actuelle = self.app.flashcards.tirer_carte()
             self.question.config(text=self.app.carte_actuelle.question)
+            self.afficher_image(self.app.carte_actuelle)  # === AJOUT ===
 
             self.btn_ok.pack(pady=5)
             self.btn_nok.pack(pady=5)
@@ -477,12 +447,18 @@ class FlashcardView(Frame):
         # afficher la réponse
         if not self._showing_answer:
             self.question.config(text=self.app.carte_actuelle.reponse)
+            self.afficher_image(self.app.carte_actuelle)  # === AJOUT ===
+
             self._showing_answer = True
             self.btn_show.configure(text="Revoir la question")
+            self.image_label.config(image="")
+
 
         # revenir à la question
         else:
             self.question.config(text=self.app.carte_actuelle.question)
+            self.afficher_image(self.app.carte_actuelle)  # === AJOUT ===
+
             self._showing_answer = False
             self.btn_show.configure(text="Afficher réponse")
 
@@ -501,6 +477,8 @@ class FlashcardView(Frame):
         self.app.carte_actuelle = self.app.flashcards.tirer_carte()
         if self.app.carte_actuelle:
             self.question.config(text=self.app.carte_actuelle.question)
+            self.afficher_image(self.app.carte_actuelle)
+
         else:
             self.question.config(text="")
         self.btn_ok.pack(pady=5)
@@ -513,6 +491,23 @@ class FlashcardView(Frame):
         self.question.configure(bg=t["bg"], fg=t["fg"])
         for w in (self.liste, self.btn_show, self.btn_ok, self.btn_nok, self.btn_retour):
             w.configure(bg=t["button_bg"], fg=t["button_fg"], bd=0)
+    # ===== AJOUT AFFICHAGE IMAGE =====
+    def afficher_image(self, carte):
+        if not carte or not carte.img:
+            self.image_label.config(image="")
+            self.photo = None
+            return
+
+        if not os.path.exists(carte.img):
+            self.image_label.config(image="", text="Image introuvable")
+            self.photo = None
+            return
+
+        img = Image.open(carte.img)
+        img.thumbnail((350, 250))
+        self.photo = ImageTk.PhotoImage(img)
+
+        self.image_label.config(image=self.photo)
 
 
 # =====================
@@ -649,6 +644,30 @@ class GestionChapitreView(Frame):
         Label(dlg, text="Réponse:").pack(padx=10, pady=(8,0))
         e_r = Entry(dlg, width=60)
         e_r.pack(padx=10, pady=4)
+                        # === AJOUT IMAGE ===
+        img_path = {"path": ""}
+
+        def choisir_image():
+            src = filedialog.askopenfilename(
+                title="Choisir une image",
+                filetypes=[("Images", "*.png *.jpg *.jpeg *.gif")]
+            )
+            if not src:
+                return
+
+            images_dir = os.path.join(os.path.dirname(__file__), "..", "images")
+            os.makedirs(images_dir, exist_ok=True)
+
+            filename = os.path.basename(src)
+            dest = os.path.join(images_dir, filename)
+
+
+            img_path["path"] = dest
+            lbl_img.config(text=filename)
+
+        Button(dlg, text="Choisir une image", command=choisir_image).pack(pady=5)
+        lbl_img = Label(dlg, text="Aucune image sélectionnée")
+        lbl_img.pack()
 
         def on_valider():
             q = e_q.get().strip()
@@ -656,10 +675,12 @@ class GestionChapitreView(Frame):
             if not q or not r:
                 messagebox.showwarning("Données manquantes", "Question et réponse requises.", parent=dlg)
                 return
-            if messagebox.askyesno("Confirmation", f"Créer la carte ?\nQuestion: {q}\nRéponse: {r}"):
-                chap.cree_cartes(q, r)
-                messagebox.showinfo("Créé", "La carte a été créée.", parent=dlg)
-                dlg.destroy()
+            chap.cree_cartes(q, r, img_path["path"])  # === MODIFIÉ ===
+
+            # if messagebox.askyesno("Confirmation", f"Créer la carte ?\nQuestion: {q}\nRéponse: {r}"):
+            #     chap.cree_cartes(q, r)
+            messagebox.showinfo("Créé", "La carte a été créée avec l'image.", parent=dlg)
+            dlg.destroy()
 
         Button(dlg, text="Valider", command=on_valider).pack(pady=10)
 
