@@ -4,6 +4,7 @@ from tkinter import simpledialog
 import os
 from PIL import Image, ImageTk
 from tkinter import filedialog
+import shutil
 
 
 
@@ -661,6 +662,7 @@ class GestionChapitreView(Frame):
             filename = os.path.basename(src)
             dest = os.path.join(images_dir, filename)
 
+            shutil.copy(src, dest)
 
             img_path["path"] = dest
             lbl_img.config(text=filename)
