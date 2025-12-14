@@ -4,7 +4,7 @@
         "reponse": "Tkinter",
         "question": "Qu'utilisons nous comme interface grafique",
         "img": "",
-        "niveau": 4
+        "niveau": 5
     },
     {
         "id": 2,
@@ -25,6 +25,6 @@
         "reponse": "JSON",
         "question": "quel format de fichier utilisons nous pour sauvgarder les cartes ?",
         "img": "",
-        "niveau": 4
+        "niveau": 3
     }
 ]

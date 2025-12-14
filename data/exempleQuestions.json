@@ -3,21 +3,21 @@
         "id": 1,
         "reponse": "Paris",
         "question": "quelle est la capitale de la France?",
-        "img": "",
-        "niveau": 4
+        "img": "c:\\Users\\foumo\\OneDrive - EPHEC asbl\\TPPYTHON\\projetDev\\Projet_Dev_II\\..\\images\\téléchargement.jpeg",
+        "niveau": 5
     },
     {
         "id": 2,
         "reponse": "4",
         "question": "que donne 2 + 2 ?",
         "img": "",
-        "niveau": 6
+        "niveau": 9
     },
     {
         "id": 3,
         "reponse": "Jupiter",
         "question": "quelle est la plus grande planète du système solaire?",
         "img": "",
-        "niveau": 2
+        "niveau": 9
     }
 ]

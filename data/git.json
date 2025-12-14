@@ -4,7 +4,7 @@
         "reponse": "git pull",
         "question": "quel commande permet de récuperer les modification de tout les autres utilisateur qui ont push leur code au préalable ?",
         "img": "",
-        "niveau": 4
+        "niveau": 3
     },
     {
         "id": 2,

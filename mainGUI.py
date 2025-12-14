@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import simpledialog
+from PIL import Image, ImageTk
+
 import os
 
 from modules.chapitre import Chapitres
@@ -263,12 +265,16 @@ class QuizView(Frame):
     def __init__(self, parent, app):
         super().__init__(parent)
         self.app = app
+        self.photo = None
+        self.quiz = None
+        self.carte = None
 
         # center everything in this frame
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.center = Frame(self)
-        self.center.grid(row=0, column=0)
+        self.center.pack(expand=True)
+
 
         self.title_label = Label(self.center, text="Quiz", font=("Helvetica", 28, "bold"))
         self.title_label.pack(pady=20)
@@ -276,11 +282,18 @@ class QuizView(Frame):
         self.liste = Listbox(self.center, height=6)
         self.liste.pack(pady=10)
 
-        self.question = Label(self.center, text="", wraplength=800, font=("Helvetica", 16))
-        self.question.pack(pady=20)
+        # --- Carte visuelle ---
+        self.card = Frame(self.center, bg="white", bd=2, relief="raised")
+        self.card.pack(padx=40, pady=20, fill="x")
 
-        self.reponse = Entry(self.center, width=40)
-        self.reponse.pack()
+        self.question= Label(self.card, text="", wraplength=700, font=("Helvetica", 18, "bold"), bg="white")
+        self.question.pack(padx=20, pady=20)
+
+        self.image_label = Label(self.center)
+        self.image_label.pack(pady=10)
+
+        self.reponse = Entry(self.center, width=40, font=("Helvetica", 14))
+        self.reponse.pack(pady=10)
 
         self.btn_valider = Button(self.center, text="Valider", command=self.valider)
         self.btn_lancer = Button(self.center, text="Lancer", command=self.lancer)
@@ -288,49 +301,78 @@ class QuizView(Frame):
 
         self.btn_lancer.pack(pady=5)
         self.btn_valider.pack(pady=5)
-        self.btn_retour.pack(pady=20)
+        self.btn_retour.pack(pady=15)
+
+
+    def afficher_image(self, chemin):
+        if not chemin or not os.path.exists(chemin):
+            self.image_label.config(image="", text="")
+            return
+
+        img = Image.open(chemin)
+        img = img.resize((300, 200))
+        self.photo = ImageTk.PhotoImage(img)
+
+        self.image_label.config(image=self.photo)
+        self.image_label.image = self.photo
+   
+
+    # def actualiser(self):
+    #     # show/hide chapter list depending on whether a chapter was preselected
+    #     if self.app.selected_chapter:
+    #         try:
+    #             self.liste.pack_forget()
+    #         except Exception:
+    #             pass
+    #     else:
+    #         # ensure listbox is visible and populated
+    #         try:
+    #             self.liste.pack()
+    #         except Exception:
+    #             pass
+    #         self.liste.delete(0, END)
+    #         for nom in self.app.chapitres:
+    #             self.liste.insert(END, nom)
 
     def actualiser(self):
-        # show/hide chapter list depending on whether a chapter was preselected
-        if self.app.selected_chapter:
-            try:
-                self.liste.pack_forget()
-            except Exception:
-                pass
-        else:
-            # ensure listbox is visible and populated
-            try:
-                self.liste.pack()
-            except Exception:
-                pass
-            self.liste.delete(0, END)
-            for nom in self.app.chapitres:
-                self.liste.insert(END, nom)
+        self.liste.delete(0, END)
+        for nom in self.app.chapitres:
+            self.liste.insert(END, nom)
         
 
+    # def lancer(self):
+    #     if self.app.selected_chapter:
+    #         nom = self.app.selected_chapter
+    #     else:
+    #         nom = self.liste.get(ACTIVE)
+    #     self.app.quiz = Quiz(self.app.chapitres[nom])
+    #     self.app.carte_actuelle = self.app.quiz.tirer_cartes()
+    #     self.question.config(text=self.app.carte_actuelle.question)
     def lancer(self):
-        if self.app.selected_chapter:
-            nom = self.app.selected_chapter
-        else:
-            nom = self.liste.get(ACTIVE)
-        self.app.quiz = Quiz(self.app.chapitres[nom])
-        self.app.carte_actuelle = self.app.quiz.tirer_cartes()
-        self.question.config(text=self.app.carte_actuelle.question)
+        self.quiz = Quiz(self.app.chapitres[self.app.selected_chapter])
+        self.carte = self.quiz.tirer_cartes()
+        self.question.config(text=self.carte.question)
+        self.afficher_image("img/téléchargement.jpeg")
+
+    
 
     def valider(self):
-        carte = self.app.carte_actuelle
-        if not carte:
+        if not self.carte:
             return
-        if self.reponse.get().lower() == carte.reponse.lower():
-            carte.connue()
-            messagebox.showinfo("Quiz", "Bonne réponse")
+        
+        if self.reponse.get().lower() == self.carte.reponse.lower():
+            self.carte.connue()
+            messagebox.showinfo("Quiz", "Bonne réponse ✔")
         else:
-            carte.pas_connue()
-            messagebox.showinfo("Quiz", f"Mauvaise réponse : {carte.reponse}")
-        self.app.quiz.chapitre.sauvegarder_cartes()
+            self.carte.pas_connue()
+            messagebox.showinfo("Quiz", f"Mauvaise réponse ❌\n{self.carte.reponse}")
+        self.quiz.chapitre.sauvegarder_cartes()
         self.reponse.delete(0, END)
-        self.app.carte_actuelle = self.app.quiz.tirer_cartes()
-        self.question.config(text=self.app.carte_actuelle.question)
+
+        self.carte = self.quiz.tirer_cartes()
+        self.question.config(text=self.carte.question)
+        self.afficher_image(self.carte.img)
+
 
     def apply_theme(self, t):
         self.configure(bg=t["bg"])
