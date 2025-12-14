@@ -328,10 +328,10 @@ class QuizView(Frame):
             return
         if self.reponse.get().lower() == carte.reponse.lower():
             carte.connue()
-            messagebox.showinfo("Quiz", "Bonne réponse")
+            messagebox.showinfo("Quiz", "Bonne réponse ✔ ")
         else:
             carte.pas_connue()
-            messagebox.showinfo("Quiz", f"Mauvaise réponse : {carte.reponse}")
+            messagebox.showinfo("Quiz", f"Mauvaise réponse ❌\n{carte.reponse}")
         self.app.quiz.chapitre.sauvegarder_cartes()
         self.reponse.delete(0, END)
         self.app.carte_actuelle = self.app.quiz.tirer_cartes()

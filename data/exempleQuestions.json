@@ -4,20 +4,20 @@
         "reponse": "Paris",
         "question": "quelle est la capitale de la France?",
         "img": "c:\\Users\\foumo\\OneDrive - EPHEC asbl\\TPPYTHON\\projetDev\\Projet_Dev_II\\..\\images\\téléchargement.jpeg",
-        "niveau": 5
+        "niveau": 6
     },
     {
         "id": 2,
         "reponse": "4",
         "question": "que donne 2 + 2 ?",
         "img": "",
-        "niveau": 9
+        "niveau": 10
     },
     {
         "id": 3,
         "reponse": "Jupiter",
         "question": "quelle est la plus grande planète du système solaire?",
         "img": "",
-        "niveau": 9
+        "niveau": 10
     }
 ]
