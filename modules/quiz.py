@@ -20,7 +20,7 @@ class Quiz:
         return Quiz.choix_aleatoire(listeCartes)
             
     def jouer(self):
-        print(f"Quiz sur le chapitre : {self.chapitre.nom}")
+        print(f" [===== {self.chapitre.nom} =====]\nTapez 'q' pour quitter à tout moment.\n")
         compteur = 0
         type_questions = ["ouvert", "vraiFaux", "qcm"]
 
@@ -30,19 +30,20 @@ class Quiz:
             regex_reponse = re.compile(r"^[a-zA-ZÀ-ÿ0-9\s]+$")
 
             if type_actuel == "ouvert":
-                print(f"Question : {carteActuelle.question}")
-                reponse_utilisateur = input("Entrez votre réponse (q pour quitter)")
+                print(f"\nQuestion : {carteActuelle.question}")
+                reponse_utilisateur = input("Entrez votre réponse : ")
+                print("")
                 if reponse_utilisateur.lower() == "q":
                     break
                 if not regex_reponse.match(reponse_utilisateur):
-                    print("Réponse invalide (caractères non autorisés)")
+                    print("    => Réponse invalide (caractères non autorisés)\n")
                     continue
                 if reponse_utilisateur.lower() == carteActuelle.reponse.lower():
-                    print("Bonne réponse !")
+                    print("    => Bonne réponse !\n")
                     self.score += 1
                     carteActuelle.connue()
                 else:
-                    print(f"Mauvaise réponse ! La bonne réponse était {carteActuelle.reponse}")
+                    print(f"    => Mauvaise réponse ! La bonne réponse était {carteActuelle.reponse}\n")
                     carteActuelle.pas_connue()
 
                 compteur += 1
@@ -58,19 +59,20 @@ class Quiz:
                     reponseQuestion = "f"
                 reponse_utilisateur = ""
                 while reponse_utilisateur.lower() != "v" and reponse_utilisateur.lower() != "f" and reponse_utilisateur.lower() != "q":
-                    reponse_utilisateur = input(f"Vrai(v) ou Faux(f) : \nQuestion : {question} \nRéponse : {reponse} (q pour quitter)")
+                    reponse_utilisateur = input(f" <== Vrai ou Faux ==> \n\nQuestion : {question} \nRéponse : {reponse} \nRépondez par v, f ou q : ")
+                    print("")
                     if reponse_utilisateur.lower() not in ("v", "f", "q"):
                         print("Répondez par v, f ou q")
                 if reponse_utilisateur.lower() == "q":
                     break
                 elif reponse_utilisateur.lower() == reponseQuestion:
-                    print("Bonne réponse !")
+                    print("    => Bonne réponse !\n")
                     self.score += 1
                     carteActuelle.connue()
                 else:
-                    print(f"Mauvaise réponse ! La bonne réponse était {reponseQuestion}")
+                    print(f"    => Mauvaise réponse ! La bonne réponse était {reponseQuestion}\n")
                     carteActuelle.pas_connue()
                 compteur += 1
 
-        print(f"Quiz terminé ! Score final : {self.score}/{compteur}")
+        print(f"\n <== Quiz terminé ! Score final : {self.score}/{compteur} ==>\n")
             
