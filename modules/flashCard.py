@@ -37,7 +37,7 @@ class FlashCards:
         """Retourne l index courant"""
         return self._index
 
-    def mettre_a_jour_cartes(self):
+    def mettre_a_jour_cartes(self):  #chat gpt
         """Met à jour la liste des IDs si le chapitre change"""
         self._ids = list(self._chapitre.cartes.keys())
         if self._index >= len(self._ids):
@@ -58,6 +58,11 @@ class FlashCards:
         if id_carte not in self._chapitre.cartes:
             raise FlashCardError(f"La carte avec l ID {id_carte} n existe pas")
         return self._chapitre.cartes[id_carte].reponse
+    
+    def cartes_difficiles(self, seuil=3):
+        """Retourne les cartes dont le niveau est inférieur ou égal au seuil"""
+        return list(filter(lambda c: c.niveau <= seuil, self._chapitre.cartes.values()))
+
 
     def carte_suivante(self):
         """Passe à la carte suivante et retourne sa question"""
