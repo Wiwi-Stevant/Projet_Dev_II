@@ -17,7 +17,7 @@ class Quiz:
 #charger un chapitre et tirer une carte aléatoirement
     def tirer_cartes(self): 
         listeCartes = list(self.chapitre.cartes.values())
-        return Quiz.choisir_aleatoire(listeCartes)
+        return Quiz.choix_aleatoire(listeCartes)
             
     def jouer(self):
         print(f"Quiz sur le chapitre : {self.chapitre.nom}")
