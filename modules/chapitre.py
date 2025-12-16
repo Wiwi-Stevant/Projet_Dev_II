@@ -70,7 +70,7 @@ class Chapitres:
         compteur = 0
         for _ in self.cartes:
             compteur += 1
-        yield compteur
+        yield compteur # utilisation d'un générateur
 
     def __str__(self): # on affiche toutes les cartes du chapitre
         print(f" [===== {self.nom} ({self.id}) =====]")
