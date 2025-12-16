@@ -1,4 +1,5 @@
 class Cartes:
+    limiter_niveau = lambda self, n: max(0, min(10, n))
     def __init__(self, id, question, reponse, img ,niveau = 4):
         self.id = id
         self.reponse = reponse
@@ -10,11 +11,7 @@ class Cartes:
         return self.niveau
     
     def set_niveau(self, niveau): # en fonction de nos reponses dans les quiz et de si on connait ou pas la carte dans les flashcards on modifie le niveau
-        self.niveau = niveau
-        if self.niveau < 0:
-            self.niveau = 0
-        if self.niveau > 10:
-            self.niveau = 10
+        self.niveau = self.limiter_niveau(niveau)
 
     def connue(self): # on augmente le niveau de la carte
         self.set_niveau(self.niveau + 1)
