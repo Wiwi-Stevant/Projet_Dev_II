@@ -52,6 +52,11 @@ class FlashCards:
 
         poids = [max(1, 5 - c.niveau) for c in cartes]  # plus le niveau est bas, plus la carte est tirée
         return random.choices(cartes, weights=poids, k=1)[0]
+    
+    def toutes_les_questions(self):
+        """Retourne la liste de toutes les questions du chapitre"""
+        return list(map(lambda c: c.question, self._chapitre.cartes.values()))
+
 
     def retourner(self, id_carte):
         """Retourne la réponse de la carte sélectionnée"""
