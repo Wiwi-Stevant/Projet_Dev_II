@@ -27,3 +27,5 @@ class Carte:
             nouveau_niveau += 1
         else:
             nouveau_niveau -= 1
+     
+        return (self.id_carte, self.niveau) # tuple qui retourne l'id et le niveau actuel de la carte
