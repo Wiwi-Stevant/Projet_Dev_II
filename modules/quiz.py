@@ -10,10 +10,14 @@ class Quiz:
             self.chapitre.charger_cartes()
         self.score = 0
 
+    @staticmethod
+    def choix_aleatoire(liste):
+        return random.choice(liste)
+
 #charger un chapitre et tirer une carte aléatoirement
     def tirer_cartes(self): 
         listeCartes = list(self.chapitre.cartes.values())
-        return random.choice(listeCartes)
+        return Quiz.choisir_aleatoire(listeCartes)
             
     def jouer(self):
         print(f"Quiz sur le chapitre : {self.chapitre.nom}")
@@ -42,7 +46,7 @@ class Quiz:
                     carteActuelle.pas_connue()
 
                 compteur += 1
-                
+
             elif type_actuel == "vraiFaux":
                 autreCarte = self.tirer_cartes()
                 reponses = [carteActuelle.reponse, autreCarte.reponse]
