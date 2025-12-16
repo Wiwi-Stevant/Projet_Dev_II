@@ -12,6 +12,7 @@ class Cartes:
     
     def set_niveau(self, niveau): # en fonction de nos reponses dans les quiz et de si on connait ou pas la carte dans les flashcards on modifie le niveau
         self.niveau = self.limiter_niveau(niveau)
+        print(self.id, self.niveau) # tuple affichant le niveau actuel de la carte.
 
     def connue(self): # on augmente le niveau de la carte
         self.set_niveau(self.niveau + 1)
