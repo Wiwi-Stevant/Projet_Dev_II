@@ -96,11 +96,11 @@ def flashcards():
             break
 
         print(f"\nQuestion : {carte.question}")
-        cmd = input(" Appuyez sur Entrée pour voir la réponse : ").strip().lower()
+        cmd = input("Voir la réponse : ").strip().lower()
         if cmd == 'q':
             break
 
-        print(f"Réponse : {carte.reponse}")
+        print(f"    => {carte.reponse}")
         if carte.img:
             print(f"Image associée : {carte.img}")
 
