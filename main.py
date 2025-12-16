@@ -138,7 +138,8 @@ def menu_chapitre(chap_charger):
     => 2. Supprimer une carte
     => 3. Modifier une carte
     => 4. Afficher les cartes
-    => 5. Retour au menu principal\n""")
+    => 5. Afficher le nombre de cartes du chapitre
+    => 6. Retour au menu principal\n""")
         choix = input("Veuillez entrer le numéro de l'option : ").strip()
         print("")
 
@@ -208,6 +209,11 @@ def menu_chapitre(chap_charger):
             chap_charger.__str__()
             print("")
         elif choix == "5":
+            total = 0
+            for total in chap_charger.nombre_cartes():
+                pass
+            print(f"\nLe chapitre '{chap_charger.nom}' contient {total} carte(s).\n")
+        elif choix == "6":
             main()
             break
         else:

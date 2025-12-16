@@ -66,6 +66,12 @@ class Chapitres:
         carte.img = img
         self.sauvegarder_cartes()
 
+    def nombre_cartes(self): # on compte le nombre de cartes dans le chapitre
+        compteur = 0
+        for _ in self.cartes:
+            compteur += 1
+        yield compteur
+
     def __str__(self): # on affiche toutes les cartes du chapitre
         print(f" [===== {self.nom} ({self.id}) =====]")
 
