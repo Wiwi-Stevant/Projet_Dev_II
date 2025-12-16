@@ -1,5 +1,6 @@
 from modules.chapitre import Chapitres
 import random
+import re
 class Quiz:
     def __init__(self, chapitre):
         if isinstance(chapitre, Chapitres): # --> chat GPT
@@ -18,22 +19,30 @@ class Quiz:
         print(f"Quiz sur le chapitre : {self.chapitre.nom}")
         compteur = 0
         type_questions = ["ouvert", "vraiFaux", "qcm"]
+
         while True:
             carteActuelle = self.tirer_cartes()
             type_actuel = random.choice(type_questions)
+            regex_reponse = re.compile(r"^[a-zA-ZÀ-ÿ0-9\s]+$")
+
             if type_actuel == "ouvert":
                 print(f"Question : {carteActuelle.question}")
                 reponse_utilisateur = input("Entrez votre réponse (q pour quitter)")
                 if reponse_utilisateur.lower() == "q":
                     break
-                elif reponse_utilisateur.lower() == carteActuelle.reponse.lower():
+                if not regex_reponse.match(reponse_utilisateur):
+                    print("Réponse invalide (caractères non autorisés)")
+                    continue
+                if reponse_utilisateur.lower() == carteActuelle.reponse.lower():
                     print("Bonne réponse !")
                     self.score += 1
                     carteActuelle.connue()
                 else:
                     print(f"Mauvaise réponse ! La bonne réponse était {carteActuelle.reponse}")
                     carteActuelle.pas_connue()
+
                 compteur += 1
+                
             elif type_actuel == "vraiFaux":
                 autreCarte = self.tirer_cartes()
                 reponses = [carteActuelle.reponse, autreCarte.reponse]
@@ -58,5 +67,6 @@ class Quiz:
                     print(f"Mauvaise réponse ! La bonne réponse était {reponseQuestion}")
                     carteActuelle.pas_connue()
                 compteur += 1
+
         print(f"Quiz terminé ! Score final : {self.score}/{compteur}")
             
