@@ -43,6 +43,11 @@ class FlashCards:
         if self._index >= len(self._ids):
             self._index = 0
 
+    def generer_cartes(self):
+        """Générateur qui parcourt  les cartes une par une"""
+        for carte in self._chapitre.cartes.values():
+            yield carte       
+
     def tirer_carte(self):
         """Tire une carte aléatoire selon le niveau (plus faible = plus de chances)"""
         cartes = list(self._chapitre.cartes.values())
@@ -78,6 +83,9 @@ class FlashCards:
         self._index = (self._index + 1) % len(self._ids)
         id_carte = self._ids[self._index]
         return self._chapitre.cartes[id_carte].question
+    
+    
+
 
 
     def __str__(self):

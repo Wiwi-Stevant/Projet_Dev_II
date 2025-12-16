@@ -81,8 +81,11 @@ def flashcards():
     # Création du gestionnaire FlashCards
     fc = FlashCards(chap)
 
+    
     print(f"\n[===== {chap.nom} =====]")
     print("Tapez 'q' pour quitter à tout moment.\n")
+    for carte in fc.generer_cartes():
+        print(f"Question : {carte.question}")
 
     while True:
         fc.mettre_a_jour_cartes()  # mettre à jour la liste si des cartes ont été ajoutées/supprimées
@@ -93,7 +96,7 @@ def flashcards():
             break
 
         print(f"\nQuestion : {carte.question}")
-        cmd = input("Voir la réponse : ").strip().lower()
+        cmd = input(" Appuyez sur Entrée pour voir la réponse : ").strip().lower()
         if cmd == 'q':
             break
 
