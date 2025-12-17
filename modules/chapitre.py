@@ -19,7 +19,7 @@ class Chapitres:
 
     def charger_cartes(self):# On récupère les cartes depuis le json
         fichier_path = self._get_data_path() 
-        if os.path.exists(fichier_path):
+        try :
             with open(fichier_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 if isinstance(data, list):
@@ -33,7 +33,7 @@ class Chapitres:
                         )
                         self.cartes[carte.id] = carte
                         self.idCarte = max(self.idCarte, carte.id + 1)
-        else:
+        except FileNotFoundError:
             print("Le Chapitre n'existe pas encore.")
 
     def sauvegarder_cartes(self):  # On sauvegarde les cartes dans le json
