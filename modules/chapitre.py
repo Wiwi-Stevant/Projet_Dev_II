@@ -53,9 +53,11 @@ class Chapitres:
         return nouvelle_carte
 
     def supprimer_carte(self, id):# on supprime une carte via son id 
-        self.cartes.pop(id)
-
-        self.sauvegarder_cartes()
+        try:
+            self.cartes.pop(id)
+            self.sauvegarder_cartes()
+        except KeyError:
+            print(f"Erreur : l'id {id} n'existe pas")
 
     def modifier_carte(self, id, question, reponse, img):
         if id not in self.cartes:
