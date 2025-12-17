@@ -6,4 +6,4 @@ Il y a 2 fichiers pour lancer le projet :
 * mainGUI.py -> lance le programme en version interface graphique utilisateurs.
 
 # module a installer avant d'utiliser le projet 
-`pip install pillow` -> pour les images
+`py -m pip install pillow` -> pour les images
