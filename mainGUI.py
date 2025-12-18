@@ -27,7 +27,7 @@ class Interface(Tk):
         self.title("Jean Révise")
         self.geometry("1080x720")
         self.minsize(600, 400)
-        self.iconbitmap("img\logos\jeanReviseSansLogo.ico")
+        self.iconbitmap("img\\logos\\jeanReviseSansLogo.ico")
 
         # données
         self.chapitres = {}
