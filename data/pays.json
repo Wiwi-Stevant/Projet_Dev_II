@@ -3,7 +3,7 @@
         "id": 1,
         "reponse": "Belgium",
         "question": "Tu vis dans quel pays",
-        "img": "..\\images\\images.jpeg",
+        "img": "images/images.jpeg",
         "niveau": 2
     }
 ]

@@ -3,7 +3,7 @@
         "id": 1,
         "reponse": "Oumou",
         "question": "quel  est ton prenom?",
-        "img": "..\\images\\téléchargement.jpeg",
+        "img": "images/téléchargement.jpeg",
         "niveau": 4
     }
 ]
