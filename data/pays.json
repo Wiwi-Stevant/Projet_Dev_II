@@ -3,7 +3,7 @@
         "id": 1,
         "reponse": "Belgium",
         "question": "Tu vis dans quel pays",
-        "img": "c:\\Users\\foumo\\OneDrive - EPHEC asbl\\TPPYTHON\\projetDev\\Projet_Dev_II\\..\\images\\images.jpeg",
+        "img": "..\\images\\images.jpeg",
         "niveau": 2
     }
 ]

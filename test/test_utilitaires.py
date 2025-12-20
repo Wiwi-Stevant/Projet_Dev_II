@@ -1,8 +1,3 @@
-"""
-ici on pourra mettre des tests unitaires (si on a le courage)
-on va utiliser pytest (pour l'installer : pip install pytest)
-"""
-
 """Étant donné une carte avec un niveau initial, lorsque la méthode connue() est appelée,
      alors le niveau de la carte augmente de 1 sans dépasser la valeur maximale autorisée."""
 

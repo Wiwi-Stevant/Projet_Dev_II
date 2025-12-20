@@ -1,5 +1,0 @@
-hello si on veux preciser des chose ou autre on peux ecrire ici
-
-sa sert pas a grand chose mais c'est marrant
-
-d'ailleur comme extention vscode marrant il y a gitlantis qui permet de simuler un ocean et on peux voyager de fichier en ficher 

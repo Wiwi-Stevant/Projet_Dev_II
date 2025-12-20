@@ -198,12 +198,12 @@ def menu_chapitre(chap_charger):
 
 if __name__ == "__main__":
     charger_chapitres()
-
-    callbacks = {
-        'quizz': lambda: quizz(),            # ou partials si vous voulez arguments
-        'flashcards': lambda: flashcards(),
-        'gestion': lambda: gestion_chapitres(),
-    }
-    app = Interface(chapitres_dict=chapitres_dict, callbacks=callbacks)
-    app.mainloop()
+    main()
+#    callbacks = {
+#        'quizz': lambda: quizz(),            # ou partials si vous voulez arguments
+#        'flashcards': lambda: flashcards(),
+#        'gestion': lambda: gestion_chapitres(),
+#    }
+#    app = Interface(chapitres_dict=chapitres_dict, callbacks=callbacks)
+#    app.mainloop()
 

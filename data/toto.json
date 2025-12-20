@@ -3,7 +3,7 @@
         "id": 1,
         "reponse": "Oumou",
         "question": "quel  est ton prenom?",
-        "img": "c:\\Users\\foumo\\OneDrive - EPHEC asbl\\TPPYTHON\\projetDev\\Projet_Dev_II\\..\\images\\téléchargement.jpeg",
+        "img": "..\\images\\téléchargement.jpeg",
         "niveau": 4
     }
 ]
