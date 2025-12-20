@@ -2,6 +2,9 @@ import json
 import os
 from modules.carte import Cartes
 
+#création de l'exception personnalisée
+class CarteInexistante(Exception):
+    pass
 class Chapitres:
     idGlobal = 0
     def __init__(self, nom):
@@ -55,9 +58,11 @@ class Chapitres:
     def supprimer_carte(self, id):# on supprime une carte via son id 
         try:
             self.cartes.pop(id)
-            self.sauvegarder_cartes()
         except KeyError:
-            print(f"Erreur : l'id {id} n'existe pas")
+            raise CarteInexistante(f"Erreur : l'id {id} n'existe pas")
+        else:
+            self.sauvegarder_cartes()
+
 
     def modifier_carte(self, id, question, reponse, img):
         if id not in self.cartes:
