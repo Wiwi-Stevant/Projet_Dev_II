@@ -21,6 +21,14 @@ class Cartes:
         self.set_niveau(self.niveau - 1)
 
     def jsonification(self): # on met la carte en json pour la sauvgarde
+        """ 
+        PRE:
+            - La carte possède des attributs valides : id (int), question (str), reponse (str), img (str), niveau (int).
+
+        POST:
+            - Retourne un dictionnaire contenant toutes les informations de la carte sous forme clé-valeur.
+            - Le dictionnaire est prêt à être sauvegardé ou transmis en JSON.
+        """
         return {
             "id": self.id,
             "reponse": self.reponse,

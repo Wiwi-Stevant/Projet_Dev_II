@@ -44,7 +44,17 @@ class FlashCards:
             self._index = 0
 
     def generer_cartes(self):
-        """Générateur qui parcourt  les cartes une par une"""
+        """
+        Générateur qui parcourt  les cartes une par une.
+
+        PRE:
+            - Un chapitre valide est associé à l’objet FlashCards.
+            - Le chapitre peut contenir zéro ou plusieurs cartes.
+
+        POST:
+            - Les cartes sont retournées une par une grâce au mot-clé yield.
+            - L’ordre de retour des cartes correspond à celui du dictionnaire des cartes dans le chapitre.
+        """
         for carte in self._chapitre.cartes.values():
             yield carte       
 
