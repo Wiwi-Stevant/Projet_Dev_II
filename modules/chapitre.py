@@ -79,8 +79,12 @@ class Chapitres:
             compteur += 1
         yield compteur # utilisation d'un générateur
 
-    def __str__(self): # on affiche toutes les cartes du chapitre
-        print(f" [===== {self.nom} ({self.id}) =====]")
+    def __str__(self):
+        """on affiche toutes les cartes du chapitre"""
+        
+        retours = f" [===== {self.nom} ({self.id}) =====]"
 
         for carte in self.cartes.values():
-            print(carte)
+            retours += f"\n{carte}"
+
+        return retours

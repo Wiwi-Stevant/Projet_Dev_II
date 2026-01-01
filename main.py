@@ -1,4 +1,6 @@
+"""pour interagir avec le système de fichiers"""
 import os
+
 from modules.flashCard import FlashCards
 from modules.quiz import Quiz
 from modules.chapitre import Chapitres
@@ -24,6 +26,8 @@ def charger_chapitres(): # -> chat GPT
         print("Le dossier data n'existe pas encore.")
 
 def main():
+    """Est la fonction principale qui affiche le menu et gère les choix de l'utilisateur."""
+
     print("""\n ===== Menu Principal =====
 Bonjour, quelle option souhaitez-vous exécuter ?
     => 1. Lancer le quiz
@@ -46,8 +50,9 @@ Bonjour, quelle option souhaitez-vous exécuter ?
         main()
 
 def quizz():
+    """Est la fonction qui gère le quiz."""
+
     print("\n ===== Quiz ===== \nQuel chapitre voulez-vous utiliser pour le quiz ?")
-    
     for nom in chapitres_dict:
         print(f" => {nom}")
 
@@ -61,6 +66,7 @@ def quizz():
     main()
 
 def flashcards():
+    """Est la fonction qui gère les flashcards."""
     print("\n ===== Flashcards =====")
     if not chapitres_dict:
         print("Aucun chapitre chargé. Créez d'abord un chapitre dans la gestion des chapitres.")
@@ -80,16 +86,13 @@ def flashcards():
 
     # Création du gestionnaire FlashCards
     fc = FlashCards(chap)
-
-    
     print(f"\n[===== {chap.nom} =====]")
     print("Tapez 'q' pour quitter à tout moment.\n")
     for carte in fc.generer_cartes():
         print(f"Question : {carte.question}")
 
     while True:
-        fc.mettre_a_jour_cartes()  # mettre à jour la liste si des cartes ont été ajoutées/supprimées
-
+        fc.mettre_a_jour_cartes() # mettre à jour la liste si des cartes ont été ajoutées/supprimées
         carte = fc.tirer_carte()
         if carte is None:
             print("Aucune carte disponible.")
@@ -110,6 +113,7 @@ def flashcards():
     main()
 
 def gestion_chapitres():
+    """Est la fonction qui gère les chapitres."""
     print("\n ===== Chapitres =====\nQuel chapitre voulez-vous gérer ?")
     for nom in chapitres_dict:
         print(f" => {nom}")
@@ -132,6 +136,7 @@ def gestion_chapitres():
             gestion_chapitres()
 
 def menu_chapitre(chap_charger):
+    """Est la fonction qui affiche le menu de gestion d'un chapitre."""
     while True:
         print(f"""\n [===== {chap_charger.nom} =====]
     => 1. Ajouter une carte
@@ -152,7 +157,9 @@ def menu_chapitre(chap_charger):
     => question : {question}
     => réponse : {reponse}
     => image : {img if img else "Aucune"}""")
-            confirm = input("\nConfirmez-vous la création de cette carte ? (o/n) : ").strip().lower()
+
+            print("\nConfirmez-vous la création de cette carte ? ")
+            confirm = input("(o/n) : ").strip().lower()
             print("")
             if confirm in confirmation:
                 chap_charger.cree_cartes(question, reponse, img)
@@ -161,30 +168,33 @@ def menu_chapitre(chap_charger):
 
         elif choix == "2":
             print(" \n <== Suppression d'une carte ==>\nVoici les cartes disponibles :")
-            chap_charger.__str__()
+            print(f"{chap_charger.__str__()}\n")
 
             demand_suppression = (int(input("\nEntrez l'ID de la carte à supprimer : ").strip()))
             print("")
             carte = chap_charger.cartes.get(demand_suppression)
             print(f"voulez-vous vraiment supprimer la carte {carte} ? (o/n) :")
+
             confirm = input().strip().lower()
             if confirm in confirmation:
                 chap_charger.supprimer_carte(demand_suppression)
                 print("Carte supprimée.\n")
-            
             else:
                 print("Suppression annulée.\n")
 
         elif choix == "3":
             print("\n <== Modification d'une carte ==>\nVoici les cartes disponibles :")
-            chap_charger.__str__()
+            print(f"{chap_charger.__str__()}\n")
+
             id_modification = int(input("\nEntrez l'ID de la carte à modifier : ").strip())
             print("")
+
             if id_modification not in chap_charger.cartes:
                 print("Carte introuvable.\n")
                 continue
-            
-            confirm = input(f"Voulez-vous modifier la carte {chap_charger.cartes[id_modification]} ? (o/n) : ").strip().lower()
+
+            print("Vous avez choisi de modifier la carte : ")
+            confirm = input(f"{chap_charger.cartes[id_modification]}\n(o/n) : ").strip().lower()
             print("")
             if confirm in confirmation:
                 nouvelle_question = input("Nouvelle question : ").strip()
@@ -194,7 +204,7 @@ def menu_chapitre(chap_charger):
     => question : {nouvelle_question}
     => réponse : {nouvelle_reponse}
     => image : {nouvelle_img if nouvelle_img else "Aucune"}\n""")
-                
+
                 confirm_modif = input("Confirmez-vous les modifications ? (o/n) : ").strip().lower()
                 if confirm_modif in confirmation:
                     chap_charger.modifier_carte(id_modification, nouvelle_question, nouvelle_reponse, nouvelle_img)
@@ -205,9 +215,7 @@ def menu_chapitre(chap_charger):
                 print("Modifications annulées.\n")
 
         elif choix == "4":
-            print("\n <== Affichage des cartes ==>")
-            chap_charger.__str__()
-            print("")
+            print(f"\n <== Affichage des cartes ==>\n{chap_charger.__str__()}\n")
         elif choix == "5":
             total = 0
             for total in chap_charger.nombre_cartes():
@@ -222,3 +230,4 @@ def menu_chapitre(chap_charger):
 if __name__ == "__main__":
     charger_chapitres()
     main()
+# End-of-file (EOF)
