@@ -104,4 +104,3 @@ class Chapitres:
             retours += f"\n{carte}"
 
         return retours
-# End-of-file (EOF)

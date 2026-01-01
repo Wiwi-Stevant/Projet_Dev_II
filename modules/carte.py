@@ -55,5 +55,3 @@ class Cartes:
         retours += f"\n   -> img : {self.img if self.img else '/'},"
         retours += f"\n   -> niveau : {self.niveau}"
         return retours
-
-    # End-of-file (EOF)

@@ -230,4 +230,3 @@ def menu_chapitre(chap_charger):
 if __name__ == "__main__":
     charger_chapitres()
     main()
-# End-of-file (EOF)
