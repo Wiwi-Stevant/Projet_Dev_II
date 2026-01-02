@@ -1,3 +1,4 @@
+"""A SUPPRIMER SI L4AUTRE FICHIER FONCTIONNE BIEN !!!!!!!!!!!!!!"""
 import unittest
 from modules.carte import Cartes
 from modules.flashCard import FlashCards
