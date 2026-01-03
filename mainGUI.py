@@ -12,12 +12,6 @@ from modules.chapitre import Chapitres
 from modules.quiz import Quiz
 from modules.flashCard import FlashCards
 
-"""
-GUI FINAL – VERSION A (UN SEUL FICHIER)
-Esthétique inspirée de la V1 fournie (Jean Révise)
-Logique complètement connectée à TES classes.
-"""
-
 # =====================
 # APPLICATION PRINCIPALE
 # =====================
